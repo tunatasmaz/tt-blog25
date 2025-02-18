@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { getPortfolioItems } from '@/lib/db'
 
 export const metadata: Metadata = {
-  title: 'Home | Personal Portfolio',
-  description: 'Product Designer Portfolio and Blog',
+  title: 'Tt.',
+  description: 'Product Designer Portfolio',
 }
 
 export default async function HomePage() {
@@ -21,61 +21,64 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-3xl mx-auto mb-20">
-        <h1 className="text-4xl font-bold mb-2">Tuna Taşmaz</h1>
-        <h2 className="text-xl text-gray-600 dark:text-gray-400 mb-2">Product Designer</h2>
-        <p className="text-gray-600 dark:text-gray-400 italic mb-8">Istanbul, TURKEY</p>
+    <div className="max-w-5xl mx-auto px-4 py-12">
+      {/* Intro Section */}
+      <div className="max-w-2xl mb-20">
+        <h1 className="text-xl mb-2">Tuna Taşmaz</h1>
+        <h2 className="text-gray-600 mb-2">Product Designer</h2>
+        <p className="text-gray-600 italic mb-8">Istanbul, TURKEY</p>
         
-        <div className="space-y-4 mb-8 text-lg">
+        <div className="space-y-4 mb-8">
           <p>Üzerinde çalıştığım ya da ilham alarak boş zamanlarımda tasarladığım tüm çalışmaları burada paylaşıyorum.</p>
           <p>Fotoğraf çekmeyi,</p>
           <p>Kitap okumayı seviyorum.</p>
           <p>Farklı konularda makaleler yazıyorum.</p>
         </div>
 
-        <p className="text-lg font-medium">Beraber tasarlamak için bana ulaşabilirsin</p>
+        <p className="font-medium">Beraber tasarlamak için bana ulaşabilirsin</p>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project) => (
-          <div 
-            key={project.id} 
-            className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
-          >
-            {project.cover_image && (
-              <div className="relative h-48">
-                <Image
-                  src={project.cover_image}
-                  alt={project.title}
-                  fill
-                  className="object-cover"
-                />
+      {/* Portfolio Section */}
+      <section>
+        <h2 className="text-2xl mb-8">Çalışmalar</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {projects.map((project) => (
+            <div
+              key={project.id}
+              className="group transition-all duration-300 hover:-translate-y-1"
+            >
+              {project.cover_image && (
+                <div className="relative aspect-[4/3] mb-4 overflow-hidden">
+                  <Image
+                    src={project.cover_image}
+                    alt={project.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+              )}
+              
+              <div>
+                <h3 className="text-lg font-medium mb-2 group-hover:text-gray-600 transition-colors">
+                  {project.title}
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  {project.description}
+                </p>
+                {project.content && (
+                  <Link
+                    href={project.content}
+                    target="_blank"
+                    className="text-gray-600 hover:text-black transition-colors inline-flex items-center group-hover:translate-x-1 transition-transform duration-300"
+                  >
+                    Projeyi İncele →
+                  </Link>
+                )}
               </div>
-            )}
-            <div className="p-6">
-              <h2 className="text-xl font-semibold mb-3">{project.title}</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">{project.description}</p>
-              {project.content && (
-                <div
-                  className="prose dark:prose-invert"
-                  dangerouslySetInnerHTML={{ __html: project.content }}
-                />
-              )}
-              {project.content && (
-                <Link
-                  href={project.content}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Projeyi İncele
-                </Link>
-              )}
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </section>
     </div>
   )
 }

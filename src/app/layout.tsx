@@ -1,13 +1,17 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
-import { ThemeProvider } from '@/components/theme-provider'
 import Header from '@/components/header'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-inter',
+})
 
 export const metadata = {
   title: 'Tuna Taşmaz | Portfolio',
-  description: 'Product Designer Portfolio and Blog',
+  description: 'Product Designer Portfolio',
 }
 
 export default function RootLayout({
@@ -16,19 +20,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="tr" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
-            <Header />
-            <main>{children}</main>
-          </div>
-        </ThemeProvider>
+    <html lang="tr" className={`${inter.variable}`}>
+      <body className="font-sans antialiased bg-white text-black">
+        <Header />
+        {children}
       </body>
     </html>
   )
