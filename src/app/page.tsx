@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: 'Product Designer Portfolio',
 }
 
-export default async function HomePage() {
+export default async function PortfolioPage() {
   const { data: projects, error } = await getPortfolioItems()
 
   if (error) {

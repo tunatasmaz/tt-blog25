@@ -22,16 +22,23 @@ export default function Header() {
         
         <div className="flex items-center space-x-8">
           {navigation.map((item) => {
-            const isActive = pathname.startsWith(item.href)
+            const isActive = 
+              item.href === '/portfolyo' 
+                ? (pathname === '/' || pathname === '/portfolyo')
+                : pathname.startsWith(item.href)
+
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`text-sm transition-colors ${
+                className={`relative py-1 text-sm transition-colors ${
                   isActive ? 'text-black' : 'text-gray-600 hover:text-black'
                 }`}
               >
                 {item.name}
+                {isActive && (
+                  <span className="absolute bottom-0 left-0 w-full h-px bg-black" />
+                )}
               </Link>
             )
           })}
