@@ -36,18 +36,18 @@ export async function getAllArticleSlugs() {
   return data.map(article => article.slug)
 }
 
-export async function getProjects() {
+export async function getPortfolioItems() {
   const { data, error } = await supabase
     .from('portfolio')
     .select('*')
     .order('created_at', { ascending: false })
 
-  if (error) {
-    console.error('Error fetching projects:', error)
-    return []
-  }
+  return { data, error }
+}
 
-  return data
+export async function getSession() {
+  const { data: { session }, error } = await supabase.auth.getSession()
+  return { session, error }
 }
 
 export async function getBooks() {

@@ -13,43 +13,37 @@ export interface Database {
         Row: {
           id: number
           title: string
-          slug: string
           description: string
-          content: string
           cover_image: string | null
-          published: boolean
+          content: string
           created_at: string
-          updated_at: string | null
-          gallery_images: string[] | null
-          video_url: string | null
         }
         Insert: {
           id?: number
           title: string
-          slug: string
           description: string
-          content: string
           cover_image?: string | null
-          published?: boolean
+          content: string
           created_at?: string
-          updated_at?: string | null
-          gallery_images?: string[] | null
-          video_url?: string | null
         }
         Update: {
           id?: number
           title?: string
-          slug?: string
           description?: string
-          content?: string
           cover_image?: string | null
-          published?: boolean
+          content?: string
           created_at?: string
-          updated_at?: string | null
-          gallery_images?: string[] | null
-          video_url?: string | null
         }
       }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
     }
   }
 }

@@ -6,26 +6,36 @@ export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
   const supabase = createMiddlewareClient({ req, res })
 
-  // Refresh session if exists
+  // Auth callback'i engelleme
+  if (req.nextUrl.pathname === '/auth/callback') {
+    return res
+  }
+
   const {
     data: { session },
   } = await supabase.auth.getSession()
 
-  // If there is a session and the user tries to access login page,
-  // redirect to dashboard
-  if (session && req.nextUrl.pathname === '/admin/login') {
-    return NextResponse.redirect(new URL('/admin/dashboard', req.url))
+  // Korumalı rotalara erişim kontrolü
+  if (req.nextUrl.pathname.startsWith('/admin/dashboard')) {
+    if (!session) {
+      const redirectUrl = req.nextUrl.clone()
+      redirectUrl.pathname = '/admin/login'
+      return NextResponse.redirect(redirectUrl)
+    }
   }
 
-  // If there is no session and the user tries to access protected routes,
-  // redirect to login page
-  if (!session && req.nextUrl.pathname.startsWith('/admin/dashboard')) {
-    return NextResponse.redirect(new URL('/admin/login', req.url))
+  // Login sayfasına erişim kontrolü
+  if (req.nextUrl.pathname === '/admin/login') {
+    if (session) {
+      const redirectUrl = req.nextUrl.clone()
+      redirectUrl.pathname = '/admin/dashboard'
+      return NextResponse.redirect(redirectUrl)
+    }
   }
 
   return res
 }
 
 export const config = {
-  matcher: ['/admin/:path*']
+  matcher: ['/admin/:path*', '/auth/callback']
 }

@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getProjects } from '@/lib/db'
+import { getPortfolioItems } from '@/lib/db'
 
 export const metadata: Metadata = {
   title: 'Home | Personal Portfolio',
@@ -9,7 +9,16 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const projects = await getProjects()
+  const { data: projects, error } = await getPortfolioItems()
+
+  if (error) {
+    console.error('Error fetching projects:', error)
+    return <div>Projeler yüklenirken bir hata oluştu.</div>
+  }
+
+  if (!projects || projects.length === 0) {
+    return <div>Henüz proje eklenmemiş.</div>
+  }
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -34,21 +43,25 @@ export default async function HomePage() {
             key={project.id} 
             className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
           >
-            <div className="relative">
-              {project.cover_image && (
+            {project.cover_image && (
+              <div className="relative h-48">
                 <Image
                   src={project.cover_image}
                   alt={project.title}
-                  width={800}
-                  height={400}
-                  className="w-full h-48 object-cover"
+                  fill
+                  className="object-cover"
                 />
-              )}
-              <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-opacity duration-300" />
-            </div>
+              </div>
+            )}
             <div className="p-6">
               <h2 className="text-xl font-semibold mb-3">{project.title}</h2>
               <p className="text-gray-600 dark:text-gray-400 mb-4">{project.description}</p>
+              {project.content && (
+                <div
+                  className="prose dark:prose-invert"
+                  dangerouslySetInnerHTML={{ __html: project.content }}
+                />
+              )}
               {project.content && (
                 <Link
                   href={project.content}
