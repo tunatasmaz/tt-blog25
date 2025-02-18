@@ -1,43 +1,57 @@
-import Link from 'next/link'
+'use client'
 
-export function Header() {
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import ThemeToggle from './theme-toggle'
+
+export default function Header() {
+  const pathname = usePathname()
+
+  const navigation = [
+    { name: 'Portfolyo', href: '/' },
+    { name: 'Hakkımda', href: '/hakkimda' },
+    { name: 'Makaleler', href: '/makaleler' },
+    { name: 'Kitap Tavsiyeleri', href: '/kitap-tavsiyeleri' },
+    { name: 'Şiir Kitabı', href: '/siir-kitabi' },
+  ]
+
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white/80 dark:bg-black/80 backdrop-blur-sm z-50">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold">
-          Tt.
-        </Link>
-        
-        <nav>
-          <ul className="flex gap-6">
-            <li>
-              <Link href="/portfolyo" className="hover:text-gray-600 dark:hover:text-gray-300">
-                Portfolio
-              </Link>
-            </li>
-            <li>
-              <Link href="/hakkimda" className="hover:text-gray-600 dark:hover:text-gray-300">
-                Hakkımda
-              </Link>
-            </li>
-            <li>
-              <Link href="/makaleler" className="hover:text-gray-600 dark:hover:text-gray-300">
-                Makaleler
-              </Link>
-            </li>
-            <li>
-              <Link href="/kitap-tavsiyeleri" className="hover:text-gray-600 dark:hover:text-gray-300">
-                Kitap Önerileri
-              </Link>
-            </li>
-            <li>
-              <Link href="/siir-kitabi" className="hover:text-gray-600 dark:hover:text-gray-300">
-                Bir Ki Cümle Şiir Kitabı
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      </div>
+    <header className="border-b dark:border-gray-800">
+      <nav className="container mx-auto px-4 py-4">
+        <div className="flex justify-between items-center">
+          <Link href="/" className="text-2xl font-bold mr-8">
+            Tt.
+          </Link>
+          <div className="flex space-x-8">
+            {navigation.map((item) => {
+              const isActive = 
+                item.href === '/' 
+                  ? pathname === '/'
+                  : pathname.startsWith(item.href)
+
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`relative py-2 text-base font-medium transition-colors
+                    ${
+                      isActive
+                        ? 'text-blue-600 dark:text-blue-400'
+                        : 'text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400'
+                    }
+                  `}
+                >
+                  {item.name}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 dark:bg-blue-400" />
+                  )}
+                </Link>
+              )
+            })}
+          </div>
+          <ThemeToggle />
+        </div>
+      </nav>
     </header>
   )
 }

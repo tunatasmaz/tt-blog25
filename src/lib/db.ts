@@ -1,5 +1,7 @@
 import { supabase } from './supabase'
-import { Article, Project, Book } from '@/types'
+import { Database } from './database.types'
+
+export type Project = Database['public']['Tables']['portfolio']['Row']
 
 export async function getArticles() {
   const { data, error } = await supabase
@@ -9,7 +11,7 @@ export async function getArticles() {
     .order('created_at', { ascending: false })
 
   if (error) throw error
-  return data as Article[]
+  return data
 }
 
 export async function getArticleBySlug(slug: string) {
@@ -21,7 +23,7 @@ export async function getArticleBySlug(slug: string) {
     .single()
 
   if (error) throw error
-  return data as Article
+  return data
 }
 
 export async function getAllArticleSlugs() {
@@ -38,11 +40,14 @@ export async function getProjects() {
   const { data, error } = await supabase
     .from('portfolio')
     .select('*')
-    .eq('published', true)
     .order('created_at', { ascending: false })
 
-  if (error) throw error
-  return data as Project[]
+  if (error) {
+    console.error('Error fetching projects:', error)
+    return []
+  }
+
+  return data
 }
 
 export async function getBooks() {
@@ -52,7 +57,7 @@ export async function getBooks() {
     .order('created_at', { ascending: false })
 
   if (error) throw error
-  return data as Book[]
+  return data
 }
 
 export async function getPoems() {
