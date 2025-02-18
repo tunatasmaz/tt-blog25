@@ -8,7 +8,7 @@ import { uploadImage } from '@/lib/upload'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
-import RichTextEditor from '@/components/RichTextEditor'
+import Editor from '@/components/Editor'
 import Image from 'next/image'
 
 interface ArticleForm {
@@ -236,9 +236,9 @@ export default function NewArticlePage() {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               İçerik
             </label>
-            <RichTextEditor
-              value={form.content}
-              onChange={(data) => setForm({ ...form, content: data })}
+            <Editor
+              content={form.content}
+              onChange={(content) => setForm({ ...form, content })}
             />
           </div>
         )}
