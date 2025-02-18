@@ -3,6 +3,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getArticles } from '@/lib/db'
 
+// Her istekte sayfayı yeniden oluştur
+export const revalidate = 0
+
 export const metadata: Metadata = {
   title: 'Makaleler | Blog',
   description: 'Teknoloji, yazılım ve kişisel deneyimler hakkında yazılar',

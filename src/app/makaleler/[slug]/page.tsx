@@ -3,6 +3,9 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getArticleBySlug, getAllArticleSlugs } from '@/lib/db'
 
+// Her istekte sayfayı yeniden oluştur
+export const revalidate = 0
+
 export async function generateStaticParams() {
   const slugs = await getAllArticleSlugs()
   return slugs.map((slug) => ({
