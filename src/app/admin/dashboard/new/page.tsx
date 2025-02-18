@@ -8,7 +8,8 @@ import { uploadImage } from '@/lib/upload'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
-import { Editor } from '@tinymce/tinymce-react'
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import Image from 'next/image'
 
 interface ArticleForm {
@@ -236,25 +237,12 @@ export default function NewArticlePage() {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               İçerik
             </label>
-            <Editor
-              apiKey="76cuaonoybfmzj5rgq9fq9uwk8sinfnvdll7p7dxmiaz3qye"
-              value={form.content}
-              onEditorChange={(content) => setForm({ ...form, content })}
-              init={{
-                height: 500,
-                menubar: false,
-                plugins: [
-                  'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                  'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                  'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                ],
-                toolbar: 'undo redo | blocks | ' +
-                  'bold italic forecolor | alignleft aligncenter ' +
-                  'alignright alignjustify | bullist numlist outdent indent | ' +
-                  'removeformat | help',
-                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-                language: 'tr',
-                language_url: '/tinymce/langs/tr.js'
+            <CKEditor
+              editor={ClassicEditor}
+              data={form.content}
+              onChange={(event, editor) => {
+                const data = editor.getData();
+                setForm({ ...form, content: data });
               }}
             />
           </div>
