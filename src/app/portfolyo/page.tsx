@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Image from 'next/image'
 import { getProjects } from '@/lib/db'
 
 export const metadata: Metadata = {
@@ -16,9 +17,11 @@ export default async function PortfolioPage() {
         {projects.map((project) => (
           <div key={project.id} className="border rounded-lg overflow-hidden">
             {project.cover_image && (
-              <img
+              <Image
                 src={project.cover_image}
                 alt={project.title}
+                width={800}
+                height={400}
                 className="w-full h-48 object-cover"
               />
             )}
@@ -30,10 +33,12 @@ export default async function PortfolioPage() {
               {project.gallery_images && project.gallery_images.length > 0 && (
                 <div className="grid grid-cols-3 gap-2 mb-4">
                   {project.gallery_images.map((img, index) => (
-                    <img
+                    <Image
                       key={index}
                       src={img}
                       alt={`${project.title} gallery image ${index + 1}`}
+                      width={400}
+                      height={300}
                       className="w-full h-20 object-cover rounded"
                     />
                   ))}

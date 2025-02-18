@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Image from 'next/image'
 import { getBooks } from '@/lib/db'
 
 export const metadata: Metadata = {
@@ -15,13 +16,15 @@ export default async function BooksPage() {
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {books.map((book) => (
           <div key={book.id} className="border rounded-lg overflow-hidden">
-            <div className="aspect-w-2 aspect-h-3 relative">
-              <img
+            {book.cover_image && (
+              <Image
                 src={book.cover_image}
-                alt={`${book.title} kapağı`}
-                className="object-cover w-full h-full"
+                alt={book.title}
+                width={400}
+                height={600}
+                className="w-full h-48 object-cover"
               />
-            </div>
+            )}
             <div className="p-6">
               <h2 className="text-xl font-semibold mb-1">{book.title}</h2>
               <p className="text-gray-600 dark:text-gray-400 mb-4">

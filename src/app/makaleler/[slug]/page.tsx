@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getArticleBySlug, getAllArticleSlugs } from '@/lib/db'
 
@@ -34,9 +35,11 @@ export default async function ArticlePage({ params }: { params: { slug: string }
   return (
     <article className="container mx-auto px-4 py-8 max-w-3xl">
       {article.image_url && (
-        <img
+        <Image
           src={article.image_url}
           alt={article.title}
+          width={1200}
+          height={600}
           className="w-full h-64 object-cover rounded-lg mb-8"
         />
       )}

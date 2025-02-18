@@ -54,3 +54,18 @@ export async function getBooks() {
   if (error) throw error
   return data as Book[]
 }
+
+export async function getPoems() {
+  const { data, error } = await supabase
+    .from('poems')
+    .select('*')
+    .eq('published', true)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching poems:', error)
+    return []
+  }
+
+  return data
+}

@@ -1,4 +1,9 @@
-import Image from "next/image";
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Ana Sayfa | Blog',
+  description: 'Kişisel blog ve portfolyo sitesi',
+}
 
 export default function Home() {
   return (

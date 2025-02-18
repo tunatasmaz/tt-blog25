@@ -39,7 +39,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
       }
     }
     checkSession()
-  }, [router])
+  }, [router, loadArticle])
 
   const loadArticle = async () => {
     const { data, error } = await supabase

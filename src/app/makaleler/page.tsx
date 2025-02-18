@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { getArticles } from '@/lib/db'
 
 export const metadata: Metadata = {
@@ -22,9 +23,11 @@ export default async function ArticlesPage() {
           >
             <article className="border rounded-lg p-6 transition-shadow hover:shadow-lg">
               {article.image_url && (
-                <img
+                <Image
                   src={article.image_url}
                   alt={article.title}
+                  width={800}
+                  height={400}
                   className="w-full h-48 object-cover rounded-md mb-4"
                 />
               )}
