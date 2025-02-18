@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { getSession } from '@/lib/auth'
@@ -17,7 +17,13 @@ interface ArticleForm {
   published: boolean
 }
 
-export default function EditArticlePage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: {
+    id: string
+  }
+}
+
+export default function EditArticlePage({ params }: PageProps) {
   const router = useRouter()
   const [form, setForm] = useState<ArticleForm>({
     title: '',
@@ -29,19 +35,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
   })
   const [preview, setPreview] = useState(false)
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const { session } = await getSession()
-      if (!session) {
-        router.push('/admin/login')
-      } else {
-        loadArticle()
-      }
-    }
-    checkSession()
-  }, [router, loadArticle])
-
-  const loadArticle = async () => {
+  const loadArticle = useCallback(async () => {
     const { data, error } = await supabase
       .from('articles')
       .select('*')
@@ -54,7 +48,19 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
     } else if (data) {
       setForm(data)
     }
-  }
+  }, [params.id, router])
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { session } = await getSession()
+      if (!session) {
+        router.push('/admin/login')
+      } else {
+        loadArticle()
+      }
+    }
+    checkSession()
+  }, [router, loadArticle])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
