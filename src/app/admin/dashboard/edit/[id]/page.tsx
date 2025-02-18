@@ -8,8 +8,7 @@ import { uploadImage } from '@/lib/upload'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
-import { CKEditor } from '@ckeditor/ckeditor5-react'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import RichTextEditor from '@/components/RichTextEditor'
 import Image from 'next/image'
 
 interface ArticleForm {
@@ -254,13 +253,9 @@ export default function EditArticlePage() {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               İçerik
             </label>
-            <CKEditor
-              editor={ClassicEditor}
-              data={form.content}
-              onChange={(event, editor) => {
-                const data = editor.getData();
-                setForm({ ...form, content: data });
-              }}
+            <RichTextEditor
+              value={form.content}
+              onChange={(data) => setForm({ ...form, content: data })}
             />
           </div>
         )}
