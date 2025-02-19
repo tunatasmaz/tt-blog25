@@ -30,17 +30,22 @@ export default async function PortfolioPage() {
       {/* Intro Section */}
       <div className="max-w-2xl mb-20">
         <h1 className="text-xl mb-2">Tuna Taşmaz</h1>
-        <h2 className="text-gray-600 mb-2">Product Designer</h2>
+        <h2 className="text-gray-600 mb-2 font-medium"><b>Product Designer</b></h2>
         <p className="text-gray-600 italic mb-8">Istanbul, TURKEY</p>
         
-        <div className="space-y-4 mb-8">
-          <p>Üzerinde çalıştığım ya da ilham alarak boş zamanlarımda tasarladığım tüm çalışmaları burada paylaşıyorum.</p>
-          <p>Fotoğraf çekmeyi,</p>
-          <p>Kitap okumayı seviyorum.</p>
-          <p>Farklı konularda makaleler yazıyorum.</p>
+        <div className="leading-snug space-y-1 mb-8">
+          <p className="text-gray-600">Üzerinde çalıştığım ya da ilham alarak boş zamanlarımda tasarladığım tüm çalışmaları burada paylaşıyorum.</p>
+          <p className="text-gray-600">Fotoğraf çekmeyi,</p>
+          <p className="text-gray-600">Kitap okumayı seviyorum.</p>
+          <p className="text-gray-600">Farklı konularda makaleler yazıyorum.</p>
+          <a 
+            href="mailto:tunatasmaz@gmail.com" 
+            className="inline-block text-gray-600 hover:text-gray-900 underline transition-colors"
+          >
+            Beraber tasarlamak için bana ulaşabilirsin
+          </a>
         </div>
 
-        <p className="font-medium">Beraber tasarlamak için bana ulaşabilirsin</p>
       </div>
 
       {/* Portfolio Section */}

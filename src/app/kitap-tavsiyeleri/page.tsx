@@ -14,34 +14,44 @@ export default async function BooksPage() {
   if (error) {
     console.error('Error fetching books:', error)
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8">Kitap Tavsiyeleri</h1>
-        <p>Kitaplar yüklenirken bir hata oluştu.</p>
+      <div className="container mx-auto px-4 py-12 max-w-5xl">
+        <section className="mb-12">
+          <h1 className="text-2xl font-medium mb-6">Kitap Önerileri</h1>
+          <div className="leading-snug">
+            <p className="text-gray-600">Kitaplar yüklenirken bir hata oluştu.</p>
+          </div>
+        </section>
       </div>
     )
   }
 
   if (!books || books.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8">Kitap Tavsiyeleri</h1>
-        <p>Henüz kitap tavsiyesi eklenmemiş.</p>
+      <div className="container mx-auto px-4 py-12 max-w-5xl">
+        <section className="mb-12">
+          <h1 className="text-2xl font-medium mb-6">Kitap Önerileri</h1>
+          <div className="leading-snug">
+            <p className="text-gray-600">Henüz kitap tavsiyesi eklenmemiş.</p>
+          </div>
+        </section>
       </div>
     )
   }
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-5xl">
-      <h1 className="text-2xl font-medium mb-8">Kitap Önerileri</h1>
+      <section className="mb-12">
+        <h1 className="text-2xl font-medium mb-6">Kitap Önerileri</h1>
 
-      <div className="space-y-4 mb-12">
-        <p className="text-gray-600">
-          Okuduğum ya da okuma listemde olan kitapları burada listeliyorum.
-        </p>
-        <p className="text-gray-600">
-          Keyifli okumalar...
-        </p>
-      </div>
+        <div className="leading-snug space-y-1">
+          <p className="text-gray-600">
+            Okuduğum ya da okuma listemde olan kitapları burada listeliyorum.
+          </p>
+          <p className="text-gray-600">
+            Keyifli okumalar...
+          </p>
+        </div>
+      </section>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {books.map((book) => (

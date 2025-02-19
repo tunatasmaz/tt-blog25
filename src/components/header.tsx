@@ -21,12 +21,12 @@ export default function Header() {
           Tt.
         </Link>
         
-        <div className="flex items-center space-x-8">
+        <nav className="flex items-center space-x-8">
           {navigation.map((item) => {
             const isActive = 
               item.href === '/' 
-                ? (pathname === '/' || pathname === '/portfolyo')
-                : pathname.startsWith(item.href)
+                ? pathname === '/' || pathname === '/portfolyo'
+                : pathname?.startsWith(item.href)
 
             return (
               <Link
@@ -43,7 +43,7 @@ export default function Header() {
               </Link>
             )
           })}
-        </div>
+        </nav>
       </div>
     </div>
   )

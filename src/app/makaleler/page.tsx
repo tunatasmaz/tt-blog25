@@ -16,19 +16,21 @@ export default async function ArticlesPage() {
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-5xl">
-      <h1 className="text-2xl font-medium mb-8">Makaleler</h1>
+      <section className="mb-12">
+        <h1 className="text-2xl font-medium mb-6">Makaleler</h1>
 
-      <div className="space-y-4 mb-12">
-        <p className="text-gray-600">
-          Önce tasarlıyorum sonra anlam ve bütünlük olarak inceliyorum.
-        </p>
-        <p className="text-gray-600">
-          Tasarım üzerine yazılar yazdığım da doğru. Kategorileri ileride çoğaltırız.
-        </p>
-        <p className="text-gray-600">
-          Size edebiyat ile ilgilendiğimi söylemiş miydim 🙂
-        </p>
-      </div>
+        <div className="leading-snug space-y-1">
+          <p className="text-gray-600">
+            Önce tasarlıyorum sonra anlam ve bütünlük olarak inceliyorum.
+          </p>
+          <p className="text-gray-600">
+            Tasarım üzerine yazılar yazdığım da doğru. Kategorileri ileride çoğaltırız.
+          </p>
+          <p className="text-gray-600">
+            Size edebiyat ile ilgilendiğimi söylemiş miydim 🙂
+          </p>
+        </div>
+      </section>
 
       <div className="space-y-8">
         {articles.map((article) => (

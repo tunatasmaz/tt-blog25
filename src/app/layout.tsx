@@ -3,8 +3,8 @@ import { Inter } from 'next/font/google'
 import Header from '@/components/header'
 
 const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '500', '600'],
   display: 'swap',
   variable: '--font-inter',
 })
@@ -20,10 +20,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="tr" className={`${inter.variable}`}>
-      <body
-        className={`${inter.className} bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100`}
-      >
+    <html lang="tr" className={inter.variable}>
+      <body className="bg-white text-gray-900 antialiased">
         <Header />
         {children}
       </body>

@@ -9,15 +9,19 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto px-4 py-12 max-w-4xl">
-        <h1 className="text-2xl font-medium mb-8">Hakkımda</h1>
-        
-        <p className="text-gray-600 mb-4">
-          Her şeye istediğin, bedel ödemeden, acı çekmeden erişemezsin.
-        </p>
-        <p className="text-gray-600 mb-12">
-          Çok çalışmalı ve denemekten vazgeçmemelisin
-        </p>
+      <div className="container mx-auto px-4 py-12 max-w-5xl">
+        <section className="mb-12">
+          <h1 className="text-2xl font-medium mb-6">Hakkımda</h1>
+          
+          <div className="leading-snug space-y-1">
+            <p className="text-gray-600">
+              Her şeye istediğin, bedel ödemeden, acı çekmeden erişemezsin.
+            </p>
+            <p className="text-gray-600">
+              Çok çalışmalı ve denemekten vazgeçmemelisin
+            </p>
+          </div>
+        </section>
 
         <div className="bg-gray-50 p-8 rounded-lg">
           <div className="grid md:grid-cols-5 gap-8 items-center">
