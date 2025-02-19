@@ -9,6 +9,21 @@ const Editor = dynamic(() => import('@/components/Editor'), {
   ssr: false,
 })
 
+function generateSlug(title: string) {
+  return title
+    .toLowerCase()
+    .replace(/ğ/g, 'g')
+    .replace(/ü/g, 'u')
+    .replace(/ş/g, 's')
+    .replace(/ı/g, 'i')
+    .replace(/ö/g, 'o')
+    .replace(/ç/g, 'c')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 export default function NewArticlePage() {
   const router = useRouter()
   const [title, setTitle] = useState('')
@@ -92,7 +107,11 @@ export default function NewArticlePage() {
             type="text"
             id="title"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              const newTitle = e.target.value;
+              setTitle(newTitle);
+              setSlug(generateSlug(newTitle));
+            }}
             className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:text-gray-300"
             required
           />
