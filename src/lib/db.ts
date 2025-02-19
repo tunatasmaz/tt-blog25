@@ -56,21 +56,5 @@ export async function getBooks() {
     .select('*')
     .order('created_at', { ascending: false })
 
-  if (error) throw error
-  return data
-}
-
-export async function getPoems() {
-  const { data, error } = await supabase
-    .from('poems')
-    .select('*')
-    .eq('published', true)
-    .order('created_at', { ascending: false })
-
-  if (error) {
-    console.error('Error fetching poems:', error)
-    return []
-  }
-
-  return data
+  return { data, error }
 }
