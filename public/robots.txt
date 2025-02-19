@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+Allow: /blog
+Allow: /hakkimda
+Allow: /siir-kitabi
+
+# Özel sayfaları crawl etmesin
+Disallow: /api/
+Disallow: /admin/
+Disallow: /taslaklar/
+
+# Site haritası
+Sitemap: https://tunatasmaz.com/sitemap.xml
+
+# Crawl gecikmesi
+Crawl-delay: 10
