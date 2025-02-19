@@ -273,7 +273,7 @@ export default function DashboardPage() {
                   </td>
                   <td className="px-6 py-4 text-right space-x-2">
                     <button
-                      onClick={() => router.push(`/admin/dashboard/edit-book/${book.id}`)}
+                      onClick={() => router.push(`/admin/dashboard/edit-book?id=${book.id}`)}
                       className="text-blue-600 hover:text-blue-900"
                     >
                       Düzenle

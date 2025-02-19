@@ -43,15 +43,15 @@ export default function NewPortfolioPage() {
     published: false
   })
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setUploading(true)
       
-      if (!event.target.files || event.target.files.length === 0) {
+      if (!e.target.files || e.target.files.length === 0) {
         return
       }
 
-      const file = event.target.files[0]
+      const file = e.target.files[0]
       const publicUrl = await uploadImage(file)
       setForm({ ...form, cover_image: publicUrl })
       
@@ -60,36 +60,42 @@ export default function NewPortfolioPage() {
       alert(error.message || 'Görsel yüklenirken bir hata oluştu')
     } finally {
       setUploading(false)
-      if (event.target) {
-        event.target.value = ''
+      if (e.target) {
+        e.target.value = ''
       }
     }
   }
 
-  const handleGalleryUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setUploading(true)
       
-      if (!event.target.files || event.target.files.length === 0) {
+      if (!e.target.files || e.target.files.length === 0) {
         return
       }
 
-      const files = event.target.files
-      const newGalleryImages = await Promise.all(Array.from(files).map(async (file) => {
+      const uploadPromises = Array.from(e.target.files).map(async (file) => {
         const publicUrl = await uploadImage(file)
         return publicUrl
-      }))
-      setForm({ ...form, gallery_images: [...(form.gallery_images || []), ...newGalleryImages] })
+      })
+
+      const uploadedUrls = await Promise.all(uploadPromises)
+      setForm({ ...form, gallery_images: [...(form.gallery_images || []), ...uploadedUrls] })
       
     } catch (error: any) {
-      console.error('Görsel yükleme hatası:', error)
-      alert(error.message || 'Görsel yüklenirken bir hata oluştu')
+      console.error('Görseller yüklenirken hata:', error)
+      alert(error.message || 'Görseller yüklenirken bir hata oluştu')
     } finally {
       setUploading(false)
-      if (event.target) {
-        event.target.value = ''
+      if (e.target) {
+        e.target.value = ''
       }
     }
+  }
+
+  const removeImage = (image: string, index: number) => {
+    const newImages = form.gallery_images?.filter((_: string, i: number) => i !== index) || []
+    setForm({ ...form, gallery_images: newImages })
   }
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -258,11 +264,7 @@ export default function NewPortfolioPage() {
                 />
                 <button
                   type="button"
-                  onClick={() => {
-                    const newGallery = [...(form.gallery_images || [])];
-                    newGallery.splice(index, 1);
-                    setForm({ ...form, gallery_images: newGallery });
-                  }}
+                  onClick={() => removeImage(image, index)}
                   className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -293,7 +295,26 @@ export default function NewPortfolioPage() {
           </label>
           <Editor
             value={form.content}
-            onChange={handleContentChange}
+            onInit={(evt, editor) => {
+              // editor initialized
+            }}
+            onChange={(evt, editor) => {
+              setForm({ ...form, content: editor.getContent() })
+            }}
+            init={{
+              height: 500,
+              menubar: false,
+              plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+              ],
+              toolbar: 'undo redo | blocks | ' +
+                'bold italic forecolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+              content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+            }}
           />
         </div>
 

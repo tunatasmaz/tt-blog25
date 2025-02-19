@@ -180,6 +180,11 @@ export default function EditPage() {
 
   const isPortfolio = type === 'portfolio'
 
+  const removeImage = (image: string, index: number) => {
+    const newImages = form.gallery_images.filter((_, i) => i !== index)
+    setForm({ ...form, gallery_images: newImages })
+  }
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
@@ -329,12 +334,7 @@ export default function EditPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => {
-                        const portfolioForm = form as Portfolio
-                        const newGallery = [...(portfolioForm.gallery_images || [])];
-                        newGallery.splice(index, 1);
-                        setForm({ ...form, gallery_images: newGallery } as Portfolio);
-                      }}
+                      onClick={() => removeImage(image, index)}
                       className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -366,8 +366,22 @@ export default function EditPage() {
             İçerik
           </label>
           <Editor
-            value={form.content}
-            onChange={handleContentChange}
+            initialValue={form.content}
+            onEditorChange={(newContent: string) => setForm({ ...form, content: newContent })}
+            init={{
+              height: 500,
+              menubar: false,
+              plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+              ],
+              toolbar: 'undo redo | blocks | ' +
+                'bold italic forecolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+              content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+            }}
           />
         </div>
 

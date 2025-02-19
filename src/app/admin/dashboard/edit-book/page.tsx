@@ -1,16 +1,52 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
-export default function NewBookPage() {
+interface Book {
+  id: string
+  title: string
+  author: string
+  created_at: string
+}
+
+export default function EditBookPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const bookId = searchParams.get('id')
   const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Book>({
+    id: '',
     title: '',
-    author: ''
+    author: '',
+    created_at: ''
   })
+
+  useEffect(() => {
+    async function fetchBook() {
+      try {
+        const { data, error } = await supabase
+          .from('books')
+          .select('*')
+          .eq('id', bookId)
+          .single()
+
+        if (error) throw error
+
+        if (data) {
+          setFormData(data)
+        }
+      } catch (error) {
+        console.error('Error fetching book:', error)
+        alert('Kitap bilgileri alınırken bir hata oluştu.')
+      }
+    }
+
+    if (bookId) {
+      fetchBook()
+    }
+  }, [bookId])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -19,18 +55,19 @@ export default function NewBookPage() {
     try {
       const { error } = await supabase
         .from('books')
-        .insert([{
-          ...formData,
-          created_at: new Date().toISOString()
-        }])
+        .update({
+          title: formData.title,
+          author: formData.author
+        })
+        .eq('id', bookId)
 
       if (error) throw error
 
       router.push('/admin/dashboard')
       router.refresh()
     } catch (error) {
-      console.error('Error creating book:', error)
-      alert('Kitap oluşturulurken bir hata oluştu.')
+      console.error('Error updating book:', error)
+      alert('Kitap güncellenirken bir hata oluştu.')
     } finally {
       setLoading(false)
     }
@@ -38,7 +75,7 @@ export default function NewBookPage() {
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-8">Yeni Kitap</h1>
+      <h1 className="text-3xl font-bold mb-8">Kitabı Düzenle</h1>
       
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
         <div>
