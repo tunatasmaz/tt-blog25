@@ -6,6 +6,11 @@ import { supabase } from '@/lib/supabase'
 import { getSession } from '@/lib/auth'
 import { uploadImage } from '@/lib/upload'
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
+
+const Editor = dynamic(() => import('@/components/Editor'), {
+  ssr: false,
+})
 
 interface ArticleForm {
   title: string
@@ -91,6 +96,10 @@ export default function EditArticlePage() {
         event.target.value = ''
       }
     }
+  }
+
+  const handleContentChange = (newContent: string) => {
+    setForm({ ...form, content: newContent })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -213,49 +222,34 @@ export default function EditArticlePage() {
           )}
         </div>
 
-        <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            onClick={() => setPreview(!preview)}
-            className={`px-4 py-2 rounded-md ${preview 
-              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-              : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
-          >
-            {preview ? 'Düzenle' : 'Önizle'}
-          </button>
-        </div>
-
-        {preview ? (
-          <div className="space-y-8">
-            {form.image_url && (
-              <div className="aspect-video relative rounded-lg overflow-hidden border bg-gray-50">
-                <Image
-                  src={form.image_url}
-                  alt={form.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover"
-                />
-              </div>
-            )}
-            <div className="prose dark:prose-invert max-w-none">
-              <h1>{form.title}</h1>
-              <div dangerouslySetInnerHTML={{ __html: form.content }} />
-            </div>
-          </div>
-        ) : (
+        <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              İçerik
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Başlık
             </label>
-            <textarea
-              value={form.content}
-              onChange={(e) => setForm({ ...form, content: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
-              rows={10}
+            <input
+              type="text"
+              id="title"
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:text-gray-300"
+              required
             />
           </div>
-        )}
+
+          <div>
+            <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              İçerik
+            </label>
+            <div className="mt-1 prose prose-sm dark:prose-invert max-w-none">
+              <Editor
+                content={form.content}
+                onChange={handleContentChange}
+                placeholder="Makale içeriğini yazın..."
+              />
+            </div>
+          </div>
+        </div>
 
         <div className="flex justify-end space-x-4 pt-6 border-t">
           <button

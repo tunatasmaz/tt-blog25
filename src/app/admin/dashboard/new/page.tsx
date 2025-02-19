@@ -1,263 +1,209 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { supabase } from '@/lib/supabase'
-import { getSession } from '@/lib/auth'
-import { uploadImage } from '@/lib/upload'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import rehypeHighlight from 'rehype-highlight'
-import Image from 'next/image'
 
-interface ArticleForm {
-  title: string
-  slug: string
-  content: string
-  excerpt: string
-  image_url?: string
-  published: boolean
-}
+const Editor = dynamic(() => import('@/components/Editor'), {
+  ssr: false,
+})
 
 export default function NewArticlePage() {
   const router = useRouter()
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [form, setForm] = useState<ArticleForm>({
-    title: '',
-    slug: '',
-    content: '',
-    excerpt: '',
-    image_url: '',
-    published: false,
-  })
-  const [preview, setPreview] = useState(false)
-  const [uploading, setUploading] = useState(false)
-
-  useEffect(() => {
-    const checkSession = async () => {
-      const { session } = await getSession()
-      if (!session) {
-        router.push('/admin/login')
-      }
-    }
-    checkSession()
-  }, [router])
-
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      setUploading(true)
-      
-      if (!event.target.files || event.target.files.length === 0) {
-        return
-      }
-
-      const file = event.target.files[0]
-      const publicUrl = await uploadImage(file)
-      setForm({ ...form, image_url: publicUrl })
-      
-    } catch (error: any) {
-      console.error('Görsel yükleme hatası:', error)
-      alert(error.message || 'Görsel yüklenirken bir hata oluştu')
-    } finally {
-      setUploading(false)
-      if (event.target) {
-        event.target.value = ''
-      }
-    }
-  }
+  const [title, setTitle] = useState('')
+  const [content, setContent] = useState('')
+  const [excerpt, setExcerpt] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
+  const [slug, setSlug] = useState('')
+  const [published, setPublished] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setLoading(true)
+    setError('')
 
-    const { error } = await supabase
-      .from('articles')
-      .insert([form])
+    try {
+      const { error: createError } = await supabase
+        .from('articles')
+        .insert([
+          {
+            title,
+            content,
+            excerpt,
+            image_url: imageUrl,
+            slug,
+            published,
+            created_at: new Date().toISOString(),
+          },
+        ])
 
-    if (error) {
-      console.error('Error creating article:', error)
-    } else {
+      if (createError) throw createError
+
+      router.refresh()
       router.push('/admin/dashboard')
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/ğ/g, 'g')
-      .replace(/ü/g, 'u')
-      .replace(/ş/g, 's')
-      .replace(/ı/g, 'i')
-      .replace(/ö/g, 'o')
-      .replace(/ç/g, 'c')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-  }
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return
 
-  const handleTitleChange = (title: string) => {
-    setForm({
-      ...form,
-      title,
-      slug: generateSlug(title),
-    })
+    try {
+      setError('')
+      const file = e.target.files[0]
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Math.random()}.${fileExt}`
+      const filePath = `${fileName}`
+
+      const { error: uploadError, data } = await supabase.storage
+        .from('images')
+        .upload(filePath, file)
+
+      if (uploadError) throw uploadError
+
+      if (data) {
+        const { data: { publicUrl } } = supabase.storage
+          .from('images')
+          .getPublicUrl(data.path)
+          
+        setImageUrl(publicUrl)
+      }
+    } catch (err: any) {
+      setError(err.message)
+    }
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Yeni Makale</h1>
-        <label className="flex items-center px-4 py-2 bg-white rounded-lg shadow-sm border">
-          <input
-            type="checkbox"
-            checked={form.published}
-            onChange={(e) => setForm({ ...form, published: e.target.checked })}
-            className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          />
-          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-            Yayınla
-          </span>
-        </label>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white rounded-lg shadow-sm border p-6">
+    <div className="container mx-auto py-8">
+      <h1 className="text-2xl font-bold mb-6 px-4">Yeni Makale</h1>
+      
+      <form onSubmit={handleSubmit} className="space-y-4 p-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Başlık
           </label>
           <input
             type="text"
-            value={form.title}
-            onChange={(e) => handleTitleChange(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:text-gray-300"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="slug" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Slug
           </label>
           <input
             type="text"
-            value={form.slug}
-            onChange={(e) => setForm({ ...form, slug: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
+            id="slug"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:text-gray-300"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            İçerik
+          </label>
+          <div className="mt-1">
+            <Editor
+              content={content}
+              onChange={setContent}
+              placeholder="İçerik yazın..."
+            />
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="excerpt" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Özet
           </label>
           <textarea
-            value={form.excerpt}
-            onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
+            id="excerpt"
+            value={excerpt}
+            onChange={(e) => setExcerpt(e.target.value)}
             rows={3}
+            className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:text-gray-300"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="image" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Kapak Görseli
           </label>
-          <div className="flex items-center space-x-4">
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
-              disabled={uploading}
-            >
-              {uploading ? 'Yükleniyor...' : 'Görsel Yükle'}
-            </button>
-            <input
-              type="text"
-              value={form.image_url || ''}
-              onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-              placeholder="veya görsel URL'si girin"
-              className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
+          <input
+            type="file"
+            id="image"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-md file:border-0
+              file:text-sm file:font-semibold
+              file:bg-indigo-50 file:text-indigo-700
+              dark:file:bg-indigo-900 dark:file:text-indigo-300
+              hover:file:bg-indigo-100 dark:hover:file:bg-indigo-800"
+          />
+          {imageUrl && (
+            <img 
+              src={imageUrl} 
+              alt="Kapak görseli"
+              className="mt-2 rounded-lg max-h-48 object-cover" 
             />
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleImageUpload}
-              accept="image/*"
-              className="hidden"
-            />
-          </div>
-          {form.image_url && (
-            <div className="mt-4">
-              <div className="relative w-32 h-32 border rounded-lg overflow-hidden bg-gray-50">
-                <Image
-                  src={form.image_url}
-                  alt="Görsel önizleme"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
           )}
         </div>
 
-        <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            onClick={() => setPreview(!preview)}
-            className={`px-4 py-2 rounded-md ${preview 
-              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-              : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
-          >
-            {preview ? 'Düzenle' : 'Önizle'}
-          </button>
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="published"
+            checked={published}
+            onChange={(e) => setPublished(e.target.checked)}
+            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+          />
+          <label htmlFor="published" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+            Yayınla
+          </label>
         </div>
 
-        {preview ? (
-          <div className="space-y-8">
-            {form.image_url && (
-              <div className="aspect-video relative rounded-lg overflow-hidden border bg-gray-50">
-                <Image
-                  src={form.image_url}
-                  alt={form.title}
-                  fill
-                  className="object-cover"
-                />
+        {error && (
+          <div className="rounded-md bg-red-50 dark:bg-red-900/50 p-4">
+            <div className="flex">
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800 dark:text-red-200">Hata</h3>
+                <div className="mt-2 text-sm text-red-700 dark:text-red-300">
+                  <p>{error}</p>
+                </div>
               </div>
-            )}
-            <div className="prose dark:prose-invert max-w-none">
-              <h1>{form.title}</h1>
-              <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
-                {form.content}
-              </ReactMarkdown>
             </div>
-          </div>
-        ) : (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              İçerik
-            </label>
-            <textarea
-              value={form.content}
-              onChange={(e) => setForm({ ...form, content: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
-              rows={20}
-              required
-            />
           </div>
         )}
 
-        <div className="flex justify-end space-x-4 pt-6 border-t">
+        <div className="flex justify-end gap-4">
           <button
             type="button"
-            onClick={() => router.push('/admin/dashboard')}
-            className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+            onClick={() => router.back()}
+            className="rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             İptal
           </button>
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            disabled={loading}
+            className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Kaydet
+            {loading ? 'Kaydediliyor...' : 'Kaydet'}
           </button>
         </div>
       </form>
