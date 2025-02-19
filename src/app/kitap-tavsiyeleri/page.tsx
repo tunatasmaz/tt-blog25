@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import { getBooks } from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Kitap Tavsiyeleri | Okuma Listesi',
   description: 'Okuduğum ve tavsiye ettiğim kitaplar',
