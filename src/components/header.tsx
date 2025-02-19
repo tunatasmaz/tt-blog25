@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const navigation = [
-  { name: 'Portfolyo', href: '/portfolyo' },
+  { name: 'Portfolyo', href: '/' },
   { name: 'Hakkımda', href: '/hakkimda' },
   { name: 'Makaleler', href: '/makaleler' },
   { name: 'Kitap Tavsiyeleri', href: '/kitap-tavsiyeleri' },
@@ -23,7 +23,7 @@ export default function Header() {
         <div className="flex items-center space-x-8">
           {navigation.map((item) => {
             const isActive = 
-              item.href === '/portfolyo' 
+              item.href === '/' 
                 ? (pathname === '/' || pathname === '/portfolyo')
                 : pathname.startsWith(item.href)
 

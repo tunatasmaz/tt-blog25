@@ -42,7 +42,11 @@ export async function getPortfolioItems() {
     .select('*')
     .order('created_at', { ascending: false })
 
-  return { data, error }
+  if (error) {
+    console.error('Error fetching portfolio items:', error)
+  }
+
+  return { data: data || [], error }
 }
 
 export async function getSession() {

@@ -10,7 +10,7 @@ export interface Article {
   image_url?: string
 }
 
-export interface Project {
+export interface Portfolio {
   id: string
   title: string
   slug: string

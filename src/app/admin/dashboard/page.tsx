@@ -48,17 +48,18 @@ export default function DashboardPage() {
   }
 
   const handleDelete = async (id: string, type: 'articles' | 'portfolio' | 'books') => {
-    const itemType = type === 'articles' ? 'makaleyi' : type === 'portfolio' ? 'portfolyo öğesini' : 'kitabı'
-    if (window.confirm(`Bu ${itemType} silmek istediğinize emin misiniz?`)) {
+    if (window.confirm('Bu öğeyi silmek istediğinizden emin misiniz?')) {
       const { error } = await supabase
         .from(type)
         .delete()
         .eq('id', id)
 
       if (error) {
-        console.error(`Error deleting ${type}:`, error)
+        console.error('Error deleting item:', error)
+        alert('Öğe silinirken bir hata oluştu.')
       } else {
         loadAll()
+        router.refresh()
       }
     }
   }
@@ -181,7 +182,7 @@ export default function DashboardPage() {
                   </td>
                   <td className="px-6 py-4 text-right space-x-2">
                     <button
-                      onClick={() => router.push(`/admin/dashboard/edit/${article.id}`)}
+                      onClick={() => router.push(`/admin/dashboard/edit/${article.id}?type=articles`)}
                       className="text-blue-600 hover:text-blue-900"
                     >
                       Düzenle
@@ -231,7 +232,7 @@ export default function DashboardPage() {
                   </td>
                   <td className="px-6 py-4 text-right space-x-2">
                     <button
-                      onClick={() => router.push(`/admin/dashboard/edit-portfolio/${item.id}`)}
+                      onClick={() => router.push(`/admin/dashboard/edit/${item.id}?type=portfolio`)}
                       className="text-blue-600 hover:text-blue-900"
                     >
                       Düzenle

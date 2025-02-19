@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getPortfolioItems } from '@/lib/db'
+import { unstable_noStore as noStore } from 'next/cache'
 
 export const metadata: Metadata = {
   title: 'Tt.',
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 }
 
 export default async function PortfolioPage() {
+  noStore();
   const { data: projects, error } = await getPortfolioItems()
 
   if (error) {
@@ -16,7 +18,10 @@ export default async function PortfolioPage() {
     return <div>Projeler yüklenirken bir hata oluştu.</div>
   }
 
-  if (!projects || projects.length === 0) {
+  // Sadece yayınlanmış projeleri göster
+  const publishedProjects = projects?.filter(project => project.published) || []
+
+  if (!publishedProjects || publishedProjects.length === 0) {
     return <div>Henüz proje eklenmemiş.</div>
   }
 
@@ -42,9 +47,10 @@ export default async function PortfolioPage() {
       <section>
         <h2 className="text-2xl mb-8">Çalışmalar</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {projects.map((project) => (
-            <div
+          {publishedProjects.map((project) => (
+            <Link
               key={project.id}
+              href={`/portfolyo/${project.slug}`}
               className="group transition-all duration-300 hover:-translate-y-1"
             >
               {project.cover_image && (
@@ -65,17 +71,11 @@ export default async function PortfolioPage() {
                 <p className="text-gray-600 mb-4">
                   {project.description}
                 </p>
-                {project.content && (
-                  <Link
-                    href={project.content}
-                    target="_blank"
-                    className="text-gray-600 hover:text-black transition-colors inline-flex items-center group-hover:translate-x-1 transition-transform duration-300"
-                  >
-                    Projeyi İncele →
-                  </Link>
-                )}
+                <span className="text-gray-600 hover:text-black transition-colors inline-flex items-center group-hover:translate-x-1 transition-transform duration-300">
+                  Projeyi İncele →
+                </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
