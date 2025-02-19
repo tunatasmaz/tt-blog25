@@ -4,9 +4,9 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const navigation = [
-  { name: 'Portfolyo', href: '/' },
+  { name: 'Makaleler', href: '/' },
+  { name: 'Portfolyo', href: '/portfolyo' },
   { name: 'Hakkımda', href: '/hakkimda' },
-  { name: 'Makaleler', href: '/makaleler' },
   { name: 'Kitap Tavsiyeleri', href: '/kitap-tavsiyeleri' },
   { name: 'Bir ki cümle Şiir Kitabı', href: '/siir-kitabi' },
 ]
@@ -23,23 +23,19 @@ export default function Header() {
         
         <nav className="flex items-center space-x-8">
           {navigation.map((item) => {
-            const isActive = 
-              item.href === '/' 
-                ? pathname === '/' || pathname === '/portfolyo'
-                : pathname?.startsWith(item.href)
+            const isActive = pathname === item.href
 
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`relative py-1 text-sm transition-colors ${
-                  isActive ? 'text-black' : 'text-gray-600 hover:text-black'
+                className={`relative py-1 text-sm transition-all duration-300 ${
+                  isActive 
+                    ? 'text-black font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-black after:scale-x-100' 
+                    : 'text-gray-600 hover:text-black after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-black after:origin-right after:scale-x-0 hover:after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300'
                 }`}
               >
                 {item.name}
-                {isActive && (
-                  <span className="absolute bottom-0 left-0 w-full h-px bg-black" />
-                )}
               </Link>
             )
           })}

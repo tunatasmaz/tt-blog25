@@ -24,29 +24,57 @@ export default function AboutPage() {
         </section>
 
         <div className="bg-gray-50 p-8 rounded-lg">
-          <div className="grid md:grid-cols-5 gap-8 items-center">
+          <div className="grid md:grid-cols-5 gap-8 items-start">
             {/* Sol Taraf - Bilgiler */}
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 sticky top-8">
               <div>
-                <div className="mb-8">
-                  <h2 className="text-xl font-medium mb-2">Tuna Taşmaz</h2>
-                  <p className="text-gray-600">Product Designer</p>
+                <div className="mb-4">
+                  <h2 className="text-lg font-medium mb-1">Tuna Taşmaz</h2>
+                  <p className="text-gray-600 text-sm"><b>Girişimci & Ürün Tasarımcısı</b></p>
                 </div>
 
-                <div className="space-y-6 text-gray-600">
-                  <p>2015 yılından bu zamana kadar Web Programlama ve Tasarım endüstrisi içerisindeyim. Html, css ile başlayan serüvenim js, c#, MVC projeleriyle devam etti.</p>
+                <div className="space-y-4 text-gray-600 text-sm leading-relaxed">
+                  <p>2015 yılından bu zamana kadar Web Programlama ve Tasarım
+                  endüstrisi içerisindeyim. Html, css ile başlayan serüvenim
+                  js, c#, MVC projeleriyle devam etti.</p>
                   
-                  <p>Sonra illustrator, Photoshop derken serüvene yeni 'chapter' lar eklendi 🙂</p>
+                  <p>Sonra illustrator, Photoshop gibi tasarım araçlarıyla ilgilenirken
+                  serüvenime yeni 'chapter' lar eklendi 🙂</p>
                   
-                  <p>Tasarım yapmak, bir şeylerin oluşumuna tanıklık etmek ve yaratmak aldığım en büyük keyif oldu hep. Yaratıcı bir insan olduğuma hep inandım, hayal gücümü kullanmayı ve zorlamayı ilke edindim.</p>
+                  <p>Bir çok projede rol almak bir yana,
+                  Bir yandan tasarım yapıyor olmak ve
+                  tasarladığım hikayeyi koda dökebilmek beni cezbeden bir olaydı.
+                  Freelance ya da çalıştığım şirtketlerde yaptığım işlerde hep bu
+                  prensibi devam ettirdim.</p>
                   
-                  <p>Mobil uygulama tasarımı ise benim en çok sevdiğim, en çok içerisinde bulunmak istediğim alan oldu. Mobil uygulama ile insanların ihtiyaçlarına dokunabilmek, fikirlerine ışık tutabilmek çok değerli.</p>
+                  <p>Tasarım yapmak, bir şeylerin oluşumuna tanıklık etmek ve yaratmak,
+                  aldığım en büyük keyif oldu hep. Yaratıcı bir insan olduğuma hep inandım,
+                  hayal gücümü kullanmayı ve zorlamayı ilke edindim. Bu sebepten
+                  farklı tasarımlar yapmaktan hiç çekinmedim. Kartvizit, broşür, katalog hatta
+                  Taraftar gruplarına pankartlar bile tasarladım.</p>
+                  
+                  <p>Mobil uygulama tasarımı ise benim en çok sevdiğim, en çok içerisinde
+                  bulunmak istediğim alan oldu.
+                  Mobil uygulama ile insanların ihtiyaçlarına dokunabilmek,
+                  fikirlerine ışık tutabilmek çok değerli.</p>
+                  
+                  <p>Yapay zeka araçlarıyla tasarım yapıyor olmak, proje geliştiriyor olmanın verdiği
+                  hız ve yenilikçi yaklaşım beni her geçen gün daha heyecanlandırıyor. 
+                  Bu sebepten kendi projem olan{' '}
+                  <a 
+                    href="https://connectlist.me" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="font-bold hover:text-gray-900 transition-colors"
+                  >
+                    connectlist
+                  </a>'i geliştirmekten de çok mutluyum.</p>
                 </div>
               </div>
             </div>
 
             {/* Sağ Taraf - Görsel */}
-            <div className="relative h-[700px] md:col-span-3">
+            <div className="relative h-[800px] md:col-span-3">
               <Image
                 src="/image/vsco_061724.jpg"
                 alt="Marina gün batımı"

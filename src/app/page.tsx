@@ -1,82 +1,106 @@
 import { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
-import { getPortfolioItems } from '@/lib/db'
-import { unstable_noStore as noStore } from 'next/cache'
+import Image from 'next/image'
+import { getArticles } from '@/lib/db'
+
+// Her istekte sayfayı yeniden oluştur
+export const revalidate = 0
 
 export const metadata: Metadata = {
   title: 'Tt.',
   description: 'Product Designer Portfolio',
 }
 
-export default async function PortfolioPage() {
-  noStore();
-  const { data: projects, error } = await getPortfolioItems()
-
-  if (error) {
-    console.error('Error fetching projects:', error)
-    return <div>Projeler yüklenirken bir hata oluştu.</div>
-  }
-
-  // Sadece yayınlanmış projeleri göster
-  const publishedProjects = projects?.filter(project => project.published) || []
-
-  if (!publishedProjects || publishedProjects.length === 0) {
-    return <div>Henüz proje eklenmemiş.</div>
-  }
+export default async function HomePage() {
+  const articles = await getArticles()
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12">
-      {/* Intro Section */}
-      <div className="max-w-2xl mb-20">
-        <h1 className="text-xl mb-2">Tuna Taşmaz</h1>
-        <h2 className="text-gray-600 mb-2 font-medium"><b>Product Designer</b></h2>
-        <p className="text-gray-600 italic mb-8">Istanbul, TURKEY</p>
-        
-        <div className="leading-snug space-y-1 mb-8">
-          <p className="text-gray-600">Üzerinde çalıştığım ya da ilham alarak boş zamanlarımda tasarladığım tüm çalışmaları burada paylaşıyorum.</p>
-          <p className="text-gray-600">Fotoğraf çekmeyi,</p>
-          <p className="text-gray-600">Kitap okumayı seviyorum.</p>
-          <p className="text-gray-600">Farklı konularda makaleler yazıyorum.</p>
-          <a 
-            href="mailto:tunatasmaz@gmail.com" 
-            className="inline-block text-gray-600 hover:text-gray-900 underline transition-colors"
-          >
-            Beraber tasarlamak için bana ulaşabilirsin
-          </a>
-        </div>
+    <div className="container mx-auto px-4 py-12 max-w-5xl">
+      <section className="mb-16">
+        <h1 className="text-xl font-medium mb-2">Tuna Taşmaz</h1>
+        <h2 className="text-lg text-gray-800 mb-1 font-bold">Girişimci & Ürün Tasarımcısı</h2>
+        <p className="text-gray-600 mb-6">İstanbul, Türkiye</p>
 
-      </div>
-
-      {/* Portfolio Section */}
-      <section>
-        <h2 className="text-2xl mb-8">Çalışmalar</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {publishedProjects.map((project) => (
-            <Link
-              key={project.id}
-              href={`/portfolyo/${project.slug}`}
-              className="group block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
+        <div className="text-gray-600 space-y-4">
+          <p>
+            <a 
+              href="https://connectlist.me" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-gray-500 font-bold hover:text-gray-700 transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-gray-600 after:origin-right after:scale-x-0 hover:after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
             >
-              {project.cover_image && (
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={project.cover_image}
-                    alt={project.title}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+              Connectlist
+            </a> adında bir proje geliştiriyorum. Aynı zamanda Yapay zeka araçları ve dijital ürün tasarımıyla ilgileniyorum.
+          </p>
+          
+          <p>
+            Kendi projelerim ve zaman buldukça bilgi içerikli tasarımları hayata geçiriyorum.
+          </p>
+          
+          <p>
+            Okuduğum kitapları öneriyor, farklı konularda makaleler yazıyorum. 2015 yılında yazdığım Şiir kitabımı da burada bulabilirsin.
+          </p>
+          
+          <p>
+            Projeler, tasarımlar ve sektör üzerinde konuşmak için,{' '}
+            <a 
+              href="mailto:tunatasmaz@gmail.com"
+              className="text-gray-500 font-bold hover:text-gray-700 transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-gray-600 after:origin-right after:scale-x-0 hover:after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
+            >
+              benimle iletişime geçebilirsin.
+            </a>
+          </p>
+        </div>
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-2xl font-medium mb-8">Makaleler</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {articles && articles.map((article) => (
+            <Link 
+              key={article.id}
+              href={`/makaleler/${article.slug}`}
+              className="group block"
+            >
+              <article className="flex flex-col h-full bg-white rounded-xl overflow-hidden hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-gray-200 hover:shadow-sm">
+                {article.image_url && (
+                  <div className="relative w-full aspect-[16/9]">
+                    <Image
+                      src={article.image_url}
+                      alt={article.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                )}
+                <div className="flex flex-col justify-between flex-grow p-6">
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <time className="text-sm font-medium text-gray-400 tracking-wide">
+                        {new Intl.DateTimeFormat('tr-TR', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        }).format(new Date(article.created_at))}
+                      </time>
+                    </div>
+                    <h2 className="text-lg font-semibold mb-3 group-hover:text-gray-600 transition-colors line-clamp-2">
+                      {article.title}
+                    </h2>
+                    {article.excerpt && (
+                      <p className="text-gray-600 line-clamp-2 leading-relaxed text-sm">
+                        {article.excerpt}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="flex items-center gap-2 mt-4 text-sm font-medium text-gray-600">
+                    <span>Devamını Oku</span>
+                    <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+                  </div>
                 </div>
-              )}
-              
-              <div className="p-4 h-[150px] overflow-hidden">
-                <h3 className="text-lg font-medium mb-2 group-hover:text-gray-600 transition-colors">
-                  {project.title}
-                </h3>
-                <p className="text-gray-600 line-clamp-3">
-                  {project.description}
-                </p>
-              </div>
+              </article>
             </Link>
           ))}
         </div>
