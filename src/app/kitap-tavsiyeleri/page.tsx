@@ -8,7 +8,26 @@ export const metadata: Metadata = {
 }
 
 export default async function BooksPage() {
-  const books = await getBooks()
+  const { data: books, error } = await getBooks()
+
+  if (error) {
+    console.error('Error fetching books:', error)
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold mb-8">Kitap Tavsiyeleri</h1>
+        <p>Kitaplar yüklenirken bir hata oluştu.</p>
+      </div>
+    )
+  }
+
+  if (!books || books.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold mb-8">Kitap Tavsiyeleri</h1>
+        <p>Henüz kitap tavsiyesi eklenmemiş.</p>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
