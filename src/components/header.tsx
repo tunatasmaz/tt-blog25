@@ -8,6 +8,7 @@ const navigation = [
   { name: 'Hakkımda', href: '/hakkimda' },
   { name: 'Makaleler', href: '/makaleler' },
   { name: 'Kitap Tavsiyeleri', href: '/kitap-tavsiyeleri' },
+  { name: 'Bir ki cümle Şiir Kitabı', href: '/siir-kitabi' },
 ]
 
 export default function Header() {

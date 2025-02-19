@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto px-4 py-12 max-w-5xl">
+      <div className="container mx-auto px-4 py-12 max-w-4xl">
         <h1 className="text-2xl font-medium mb-8">Hakkımda</h1>
         
         <p className="text-gray-600 mb-4">
@@ -20,43 +20,29 @@ export default function AboutPage() {
         </p>
 
         <div className="bg-gray-50 p-8 rounded-lg">
-          <div className="grid md:grid-cols-2 gap-12">
+          <div className="grid md:grid-cols-5 gap-8 items-center">
             {/* Sol Taraf - Bilgiler */}
-            <div>
-              <div className="mb-8">
-                <h2 className="text-xl font-medium mb-2">Tuna Taşmaz</h2>
-                <p className="text-gray-600">Product Designer</p>
-              </div>
+            <div className="md:col-span-2">
+              <div>
+                <div className="mb-8">
+                  <h2 className="text-xl font-medium mb-2">Tuna Taşmaz</h2>
+                  <p className="text-gray-600">Product Designer</p>
+                </div>
 
-              <div className="space-y-4 text-gray-600">
-                <p>2015 yılından bu zamana kadar Web Programlama ve Tasarım endüstrisi içerisindeyim.Html, css ile başlayan serüvenim js, c#, MVC projeleriyle devam etti.</p>
-                
-                <p>Sonra illustrator, Photoshop derken serüvene yeni 'chapter' lar eklendi 🙂</p>
-                
-                <p>Bir çok projede rol almak bir yana,<br />
-                Bir yandan tasarım yapıyor olmak ve<br />
-                tasarladığım hikayeyi koda dökebilmek beni cezbeden bir olaydı.<br />
-                Freelance ya da çalıştığım şirketlerde yaptığım işlerde hep bu prensibi devam ettirdim.</p>
-                
-                <p>Tasarım yapmak, bir şeylerin oluşumuna tanıklık etmek ve yaratmak,<br />
-                aldığım en büyük keyif oldu hep. Yaratıcı bir insan olduğuma hep inandım,<br />
-                hayal gücümü kullanmayı ve zorlamayı ilke edindim. Bu sebepten<br />
-                farklı tasarımlar yapmaktan hiç çekinmedim. Kartvizit, broşür, katalog hatta<br />
-                Taraftar uygulanma pankarttlar bile tasarladım.</p>
-                
-                <p>Mobil uygulama tasarımı ise benim en çok sevdiğim, en çok içerisinde<br />
-                bulunmak istediğim alan oldu.</p>
-                
-                <p>Mobil uygulama ile insanların ihtiyaçlarına dokunabilmek,<br />
-                fikirlerine ışık tutabilmek çok değerli.</p>
-                
-                <p>En önemlisi tasarladığın bir hikayenin parçası olmak ve onun insanlara<br />
-                ulaştığını görmek tarif edilmesi zor bir duygu.</p>
+                <div className="space-y-6 text-gray-600">
+                  <p>2015 yılından bu zamana kadar Web Programlama ve Tasarım endüstrisi içerisindeyim. Html, css ile başlayan serüvenim js, c#, MVC projeleriyle devam etti.</p>
+                  
+                  <p>Sonra illustrator, Photoshop derken serüvene yeni 'chapter' lar eklendi 🙂</p>
+                  
+                  <p>Tasarım yapmak, bir şeylerin oluşumuna tanıklık etmek ve yaratmak aldığım en büyük keyif oldu hep. Yaratıcı bir insan olduğuma hep inandım, hayal gücümü kullanmayı ve zorlamayı ilke edindim.</p>
+                  
+                  <p>Mobil uygulama tasarımı ise benim en çok sevdiğim, en çok içerisinde bulunmak istediğim alan oldu. Mobil uygulama ile insanların ihtiyaçlarına dokunabilmek, fikirlerine ışık tutabilmek çok değerli.</p>
+                </div>
               </div>
             </div>
 
             {/* Sağ Taraf - Görsel */}
-            <div className="relative h-full min-h-[600px]">
+            <div className="relative h-[700px] md:col-span-3">
               <Image
                 src="/image/vsco_061724.jpg"
                 alt="Marina gün batımı"
