@@ -22,7 +22,11 @@ export async function getArticleBySlug(slug: string) {
     .eq('published', true)
     .single()
 
-  if (error) throw error
+  if (error) {
+    console.error('Error fetching article:', error)
+    return null
+  }
+
   return data
 }
 
@@ -32,7 +36,11 @@ export async function getAllArticleSlugs() {
     .select('slug')
     .eq('published', true)
 
-  if (error) throw error
+  if (error) {
+    console.error('Error fetching article slugs:', error)
+    return []
+  }
+
   return data.map(article => article.slug)
 }
 
