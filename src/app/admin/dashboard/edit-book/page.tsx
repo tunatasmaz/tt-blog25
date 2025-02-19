@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
@@ -11,7 +11,7 @@ interface Book {
   created_at: string
 }
 
-export default function EditBookPage() {
+function EditBookForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const bookId = searchParams.get('id')
@@ -118,5 +118,13 @@ export default function EditBookPage() {
         </div>
       </form>
     </div>
+  )
+}
+
+export default function EditBookPage() {
+  return (
+    <Suspense fallback={<div className="p-8">Yükleniyor...</div>}>
+      <EditBookForm />
+    </Suspense>
   )
 }
