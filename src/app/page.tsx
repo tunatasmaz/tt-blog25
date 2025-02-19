@@ -51,10 +51,10 @@ export default async function PortfolioPage() {
             <Link
               key={project.id}
               href={`/portfolyo/${project.slug}`}
-              className="group transition-all duration-300 hover:-translate-y-1"
+              className="group block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
             >
               {project.cover_image && (
-                <div className="relative aspect-[4/3] mb-4 overflow-hidden">
+                <div className="relative aspect-[4/3] overflow-hidden">
                   <Image
                     src={project.cover_image}
                     alt={project.title}
@@ -64,16 +64,13 @@ export default async function PortfolioPage() {
                 </div>
               )}
               
-              <div>
+              <div className="p-4 h-[150px] overflow-hidden">
                 <h3 className="text-lg font-medium mb-2 group-hover:text-gray-600 transition-colors">
                   {project.title}
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 line-clamp-3">
                   {project.description}
                 </p>
-                <span className="text-gray-600 hover:text-black transition-colors inline-flex items-center group-hover:translate-x-1 transition-transform duration-300">
-                  Projeyi İncele →
-                </span>
               </div>
             </Link>
           ))}

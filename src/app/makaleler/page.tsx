@@ -15,34 +15,57 @@ export default async function ArticlesPage() {
   const articles = await getArticles()
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8">Makaleler</h1>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="container mx-auto px-4 py-12 max-w-5xl">
+      <h1 className="text-2xl font-medium mb-8">Makaleler</h1>
+
+      <div className="space-y-4 mb-12">
+        <p className="text-gray-600">
+          Önce tasarlıyorum sonra anlam ve bütünlük olarak inceliyorum.
+        </p>
+        <p className="text-gray-600">
+          Tasarım üzerine yazılar yazdığım da doğru. Kategorileri ileride çoğaltırız.
+        </p>
+        <p className="text-gray-600">
+          Size edebiyat ile ilgilendiğimi söylemiş miydim 🙂
+        </p>
+      </div>
+
+      <div className="space-y-8">
         {articles.map((article) => (
           <Link 
             key={article.id}
             href={`/makaleler/${article.slug}`}
             className="group block"
           >
-            <article className="border rounded-lg p-6 transition-shadow hover:shadow-lg">
+            <article className="grid md:grid-cols-[280px,1fr] gap-6 bg-white rounded-lg overflow-hidden hover:bg-gray-50 transition-colors p-4">
               {article.image_url && (
-                <Image
-                  src={article.image_url}
-                  alt={article.title}
-                  width={800}
-                  height={400}
-                  className="w-full h-48 object-cover rounded-md mb-4"
-                />
+                <div className="relative h-[200px] md:h-[200px] w-full">
+                  <Image
+                    src={article.image_url}
+                    alt={article.title}
+                    fill
+                    className="object-cover rounded-lg"
+                  />
+                </div>
               )}
-              <h2 className="text-xl font-semibold mb-2 group-hover:text-blue-600">
-                {article.title}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                {article.excerpt}
-              </p>
-              <time className="text-sm text-gray-500 mt-2 block">
-                {new Date(article.created_at).toLocaleDateString('tr-TR')}
-              </time>
+              <div className="py-2">
+                <h2 className="text-xl font-medium mb-3">
+                  {article.title}
+                </h2>
+                <p className="text-gray-600 mb-3 line-clamp-2">
+                  {article.excerpt}
+                </p>
+                <div className="text-gray-600 mb-4 line-clamp-3 text-sm">
+                  {article.content}
+                </div>
+                <time className="text-sm text-gray-500">
+                  {new Date(article.created_at).toLocaleDateString('tr-TR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </time>
+              </div>
             </article>
           </Link>
         ))}
