@@ -29,7 +29,7 @@ export default function Header() {
   }, [isMenuOpen])
 
   return (
-    <div className="border-b relative z-50">
+    <div className="relative z-50 border-b border-gray-200">
       <div className="max-w-5xl mx-auto px-6 sm:px-4 flex justify-between items-center h-16">
         <Link href="/" className="text-4xl font-bold relative z-50">
           Tt.
@@ -63,7 +63,7 @@ export default function Header() {
         </button>
 
         {/* Desktop menü */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center space-x-4">
           {navigation.map((item) => {
             const isActive = pathname === item.href
 
@@ -73,8 +73,8 @@ export default function Header() {
                 href={item.href}
                 className={`relative py-1 text-sm transition-all duration-300 ${
                   isActive 
-                    ? 'text-black font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-black after:scale-x-100' 
-                    : 'text-gray-600 hover:text-black after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-black after:origin-right after:scale-x-0 hover:after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300'
+                    ? 'text-black font-medium after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-black' 
+                    : 'text-gray-600 hover:text-black after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-black after:origin-right after:scale-x-0 hover:after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300'
                 }`}
               >
                 {item.name}
