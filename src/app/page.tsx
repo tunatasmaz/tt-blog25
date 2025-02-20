@@ -60,7 +60,7 @@ export default async function HomePage() {
           {articles && articles.map((article) => (
             <Link 
               key={article.id}
-              href={`/makaleler/${article.slug}`}
+              href={`/${article.slug}`}
               className="group block"
             >
               <article className="flex flex-col h-full bg-white rounded-xl overflow-hidden hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-gray-200 hover:shadow-sm">

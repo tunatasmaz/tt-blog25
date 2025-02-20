@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 import { unstable_noStore as noStore } from 'next/cache'
+import Gallery from './gallery'
 
 type Props = {
   params: {
@@ -42,58 +43,41 @@ export default async function PortfolioDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-6">{project.title}</h1>
-      
-      {project.description && (
-        <p className="text-lg text-gray-600 mb-8">{project.description}</p>
-      )}
+      <div className="flex flex-col md:flex-row gap-8">
+        <div className="md:w-1/3">
+          <h1 className="text-3xl font-bold mb-6">{project.title}</h1>
+          
+          {project.description && (
+            <p className="text-lg text-gray-600 mb-8">{project.description}</p>
+          )}
 
-      {project.cover_image && (
-        <div className="relative aspect-video mb-8 overflow-hidden rounded-lg">
-          <Image
-            src={project.cover_image}
-            alt={project.title}
-            fill
-            className="object-cover"
-          />
+          {project.content && (
+            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: project.content }} />
+          )}
         </div>
-      )}
 
-      {project.content && (
-        <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: project.content }} />
-      )}
+        <div className="md:w-2/3">
+          {project.gallery_images && project.gallery_images.length > 0 && (
+            <Gallery images={project.gallery_images} title={project.title} />
+          )}
 
-      {project.gallery_images && project.gallery_images.length > 0 && (
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6">Galeri</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {project.gallery_images.map((image, index) => (
-              <div key={index} className="relative aspect-[4/3] rounded-lg overflow-hidden">
-                <Image
-                  src={image}
-                  alt={`${project.title} - Görsel ${index + 1}`}
-                  fill
-                  className="object-cover"
-                />
+          {project.video_url && (
+            <div className="mt-12">
+              <h2 className="text-2xl font-bold mb-6">Video</h2>
+              <div className="relative aspect-video rounded-lg overflow-hidden">
+                <video
+                  controls
+                  className="absolute top-0 left-0 w-full h-full"
+                  preload="metadata"
+                >
+                  <source src={project.video_url} type="video/mp4" />
+                  Tarayıcınız video elementini desteklemiyor.
+                </video>
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
-      )}
-
-      {project.video_url && (
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6">Video</h2>
-          <div className="relative aspect-video">
-            <iframe
-              src={project.video_url}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="absolute top-0 left-0 w-full h-full rounded-lg"
-            />
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   )
 }
