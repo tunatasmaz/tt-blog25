@@ -117,7 +117,7 @@ export default function Gallery({ images, title }: GalleryProps) {
           className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center"
           onClick={closeLightbox}
         >
-          <div className="relative w-screen h-screen flex items-center justify-center p-4">
+          <div className="relative w-full h-full md:w-[90%] md:h-[90%] max-w-5xl max-h-[80vh] flex items-center justify-center p-4">
             <Image
               src={images[lightboxIndex]}
               alt={`${title} - Image ${lightboxIndex + 1}`}

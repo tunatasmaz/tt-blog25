@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: 'Bir ki cümle Şiir Kitabı | Tuna Taşmaz',
@@ -21,12 +22,37 @@ export default function PoemsPage() {
           </div>
         </section>
         
-        <div className="w-full aspect-[1/1.4] relative">
+        {/* Masaüstü için PDF görüntüleyici */}
+        <div className="hidden md:block w-full aspect-[1/1.4] relative">
           <iframe
             src="/pdf/bir-ki-cumle-kitap.pdf"
             className="w-full h-full absolute"
             style={{ border: 'none' }}
           />
+        </div>
+
+        {/* Mobil için kitap kapağı */}
+        <div className="md:hidden">
+          <a 
+            href="/pdf/bir-ki-cumle-kitap.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
+          >
+            <div className="relative aspect-[3/4] w-full max-w-sm mx-auto overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+              <Image
+                src="/image/bir-ki-cumle-kitap.jpg"
+                alt="Bir Ki Cümle - Kitap Kapağı"
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </div>
+            <p className="text-center text-gray-500 text-sm mt-4">
+              Kitabı okumak için kapağa tıklayın
+            </p>
+          </a>
         </div>
       </div>
     </div>

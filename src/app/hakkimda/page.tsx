@@ -23,12 +23,12 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <div className="bg-gray-50 p-8 rounded-lg">
-          <div className="grid md:grid-cols-5 gap-8 items-start">
+        <div className="bg-gray-50 p-4 md:p-8 rounded-lg">
+          <div className="flex flex-col-reverse md:grid md:grid-cols-5 gap-8">
             {/* Sol Taraf - Bilgiler */}
-            <div className="md:col-span-2 sticky top-8">
+            <div className="md:col-span-2 md:sticky md:top-8">
               <div>
-                <div className="mb-4">
+                <div className="mb-4 mt-6 md:mt-0">
                   <h2 className="text-lg font-medium mb-1">Tuna Taşmaz</h2>
                   <p className="text-gray-600 text-sm"><b>Girişimci & Ürün Tasarımcısı</b></p>
                 </div>
@@ -74,7 +74,7 @@ export default function AboutPage() {
             </div>
 
             {/* Sağ Taraf - Görsel */}
-            <div className="relative h-[800px] md:col-span-3">
+            <div className="relative h-[300px] md:h-[800px] md:col-span-3">
               <Image
                 src="/image/vsco_061724.jpg"
                 alt="Marina gün batımı"
