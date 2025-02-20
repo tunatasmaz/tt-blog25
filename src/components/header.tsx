@@ -30,7 +30,7 @@ export default function Header() {
 
   return (
     <div className="border-b relative z-50">
-      <div className="max-w-5xl mx-auto px-4 flex justify-between items-center h-16">
+      <div className="max-w-5xl mx-auto px-6 sm:px-4 flex justify-between items-center h-16">
         <Link href="/" className="text-4xl font-bold relative z-50">
           Tt.
         </Link>

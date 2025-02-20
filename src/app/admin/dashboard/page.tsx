@@ -87,14 +87,14 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="container mx-auto p-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Admin Panel</h1>
-        <div className="space-x-4">
+    <div className="container max-w-5xl mx-auto px-4 sm:px-8 py-4 sm:py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+        <h1 className="text-2xl sm:text-3xl font-bold">Admin Panel</h1>
+        <div className="flex flex-wrap gap-2 sm:gap-4">
           {activeTab === 'articles' && (
             <button
               onClick={() => router.push('/admin/dashboard/new')}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="bg-blue-600 text-white px-3 sm:px-4 py-2 text-sm sm:text-base rounded-md hover:bg-blue-700"
             >
               Yeni Makale
             </button>
@@ -102,7 +102,7 @@ export default function DashboardPage() {
           {activeTab === 'portfolio' && (
             <button
               onClick={() => router.push('/admin/dashboard/new-portfolio')}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="bg-blue-600 text-white px-3 sm:px-4 py-2 text-sm sm:text-base rounded-md hover:bg-blue-700"
             >
               Yeni Portfolyo
             </button>
@@ -110,14 +110,14 @@ export default function DashboardPage() {
           {activeTab === 'books' && (
             <button
               onClick={() => router.push('/admin/dashboard/new-book')}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="bg-blue-600 text-white px-3 sm:px-4 py-2 text-sm sm:text-base rounded-md hover:bg-blue-700"
             >
               Yeni Kitap
             </button>
           )}
           <button
             onClick={handleLogout}
-            className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+            className="bg-gray-600 text-white px-3 sm:px-4 py-2 text-sm sm:text-base rounded-md hover:bg-gray-700"
           >
             Çıkış Yap
           </button>
@@ -126,7 +126,7 @@ export default function DashboardPage() {
 
       <div className="mb-6">
         <div className="border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8">
+          <nav className="-mb-px flex space-x-4 sm:space-x-8">
             <button
               onClick={() => setActiveTab('articles')}
               className={`${activeTab === 'articles' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
@@ -149,146 +149,163 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
         {activeTab === 'articles' && (
-          <table className="min-w-full">
-            <thead>
-              <tr className="border-b dark:border-gray-700">
-                <th className="px-6 py-3 text-left">Başlık</th>
-                <th className="px-6 py-3 text-left">Slug</th>
-                <th className="px-6 py-3 text-left">Durum</th>
-                <th className="px-6 py-3 text-left">Tarih</th>
-                <th className="px-6 py-3 text-right">İşlemler</th>
-              </tr>
-            </thead>
-            <tbody>
+          <div className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <div className="hidden sm:grid sm:grid-cols-5 gap-4 px-4 py-3 text-sm font-medium text-gray-500">
+              <div className="col-span-1">Başlık</div>
+              <div className="col-span-1">Slug</div>
+              <div className="col-span-1">Durum</div>
+              <div className="col-span-1">Tarih</div>
+              <div className="col-span-1 text-right">İşlemler</div>
+            </div>
+            <div className="divide-y divide-gray-200 dark:divide-gray-700">
               {articles.map((article) => (
-                <tr
+                <div
                   key={article.id}
-                  className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900"
+                  className="grid grid-cols-1 sm:grid-cols-5 gap-2 sm:gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-900"
                 >
-                  <td className="px-6 py-4">{article.title}</td>
-                  <td className="px-6 py-4">{article.slug}</td>
-                  <td className="px-6 py-4">
+                  <div className="sm:col-span-1">
+                    <div className="sm:hidden font-medium text-gray-500 mb-1">Başlık:</div>
+                    <div className="break-words">{article.title}</div>
+                  </div>
+                  <div className="sm:col-span-1">
+                    <div className="sm:hidden font-medium text-gray-500 mb-1">Slug:</div>
+                    <div className="break-words">{article.slug}</div>
+                  </div>
+                  <div className="sm:col-span-1">
+                    <div className="sm:hidden font-medium text-gray-500 mb-1">Durum:</div>
                     <button
                       onClick={() => handlePublishToggle(article, 'articles')}
-                      className={`px-2 py-1 rounded ${article.published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
+                      className={`px-2 py-1 text-sm rounded ${article.published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
                     >
                       {article.published ? 'Yayında' : 'Taslak'}
                     </button>
-                  </td>
-                  <td className="px-6 py-4">
+                  </div>
+                  <div className="sm:col-span-1">
+                    <div className="sm:hidden font-medium text-gray-500 mb-1">Tarih:</div>
                     {new Date(article.created_at).toLocaleDateString('tr-TR')}
-                  </td>
-                  <td className="px-6 py-4 text-right space-x-2">
+                  </div>
+                  <div className="sm:col-span-1 flex sm:justify-end space-x-2 mt-2 sm:mt-0">
                     <button
                       onClick={() => router.push(`/admin/dashboard/edit/${article.id}?type=articles`)}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-blue-600 hover:text-blue-900 text-sm"
                     >
                       Düzenle
                     </button>
                     <button
                       onClick={() => handleDelete(article.id, 'articles')}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 hover:text-red-900 text-sm"
                     >
                       Sil
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </div>
         )}
 
         {activeTab === 'portfolio' && (
-          <table className="min-w-full">
-            <thead>
-              <tr className="border-b dark:border-gray-700">
-                <th className="px-6 py-3 text-left">Başlık</th>
-                <th className="px-6 py-3 text-left">Slug</th>
-                <th className="px-6 py-3 text-left">Durum</th>
-                <th className="px-6 py-3 text-left">Tarih</th>
-                <th className="px-6 py-3 text-right">İşlemler</th>
-              </tr>
-            </thead>
-            <tbody>
+          <div className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <div className="hidden sm:grid sm:grid-cols-5 gap-4 px-4 py-3 text-sm font-medium text-gray-500">
+              <div className="col-span-1">Başlık</div>
+              <div className="col-span-1">Slug</div>
+              <div className="col-span-1">Durum</div>
+              <div className="col-span-1">Tarih</div>
+              <div className="col-span-1 text-right">İşlemler</div>
+            </div>
+            <div className="divide-y divide-gray-200 dark:divide-gray-700">
               {portfolioItems.map((item) => (
-                <tr
+                <div
                   key={item.id}
-                  className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900"
+                  className="grid grid-cols-1 sm:grid-cols-5 gap-2 sm:gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-900"
                 >
-                  <td className="px-6 py-4">{item.title}</td>
-                  <td className="px-6 py-4">{item.slug}</td>
-                  <td className="px-6 py-4">
+                  <div className="sm:col-span-1">
+                    <div className="sm:hidden font-medium text-gray-500 mb-1">Başlık:</div>
+                    <div className="break-words">{item.title}</div>
+                  </div>
+                  <div className="sm:col-span-1">
+                    <div className="sm:hidden font-medium text-gray-500 mb-1">Slug:</div>
+                    <div className="break-words">{item.slug}</div>
+                  </div>
+                  <div className="sm:col-span-1">
+                    <div className="sm:hidden font-medium text-gray-500 mb-1">Durum:</div>
                     <button
                       onClick={() => handlePublishToggle(item, 'portfolio')}
-                      className={`px-2 py-1 rounded ${item.published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
+                      className={`px-2 py-1 text-sm rounded ${item.published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
                     >
                       {item.published ? 'Yayında' : 'Taslak'}
                     </button>
-                  </td>
-                  <td className="px-6 py-4">
+                  </div>
+                  <div className="sm:col-span-1">
+                    <div className="sm:hidden font-medium text-gray-500 mb-1">Tarih:</div>
                     {new Date(item.created_at).toLocaleDateString('tr-TR')}
-                  </td>
-                  <td className="px-6 py-4 text-right space-x-2">
+                  </div>
+                  <div className="sm:col-span-1 flex sm:justify-end space-x-2 mt-2 sm:mt-0">
                     <button
                       onClick={() => router.push(`/admin/dashboard/edit/${item.id}?type=portfolio`)}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-blue-600 hover:text-blue-900 text-sm"
                     >
                       Düzenle
                     </button>
                     <button
                       onClick={() => handleDelete(item.id, 'portfolio')}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 hover:text-red-900 text-sm"
                     >
                       Sil
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </div>
         )}
 
         {activeTab === 'books' && (
-          <table className="min-w-full">
-            <thead>
-              <tr className="border-b dark:border-gray-700">
-                <th className="px-6 py-3 text-left">Kitap Adı</th>
-                <th className="px-6 py-3 text-left">Yazar</th>
-                <th className="px-6 py-3 text-left">Tarih</th>
-                <th className="px-6 py-3 text-right">İşlemler</th>
-              </tr>
-            </thead>
-            <tbody>
+          <div className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <div className="hidden sm:grid sm:grid-cols-4 gap-4 px-4 py-3 text-sm font-medium text-gray-500">
+              <div className="col-span-1">Kitap Adı</div>
+              <div className="col-span-1">Yazar</div>
+              <div className="col-span-1">Tarih</div>
+              <div className="col-span-1 text-right">İşlemler</div>
+            </div>
+            <div className="divide-y divide-gray-200 dark:divide-gray-700">
               {books.map((book) => (
-                <tr
+                <div
                   key={book.id}
-                  className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900"
+                  className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-900"
                 >
-                  <td className="px-6 py-4">{book.title}</td>
-                  <td className="px-6 py-4">{book.author}</td>
-                  <td className="px-6 py-4">
+                  <div className="sm:col-span-1">
+                    <div className="sm:hidden font-medium text-gray-500 mb-1">Kitap Adı:</div>
+                    <div className="break-words">{book.title}</div>
+                  </div>
+                  <div className="sm:col-span-1">
+                    <div className="sm:hidden font-medium text-gray-500 mb-1">Yazar:</div>
+                    <div className="break-words">{book.author}</div>
+                  </div>
+                  <div className="sm:col-span-1">
+                    <div className="sm:hidden font-medium text-gray-500 mb-1">Tarih:</div>
                     {new Date(book.created_at).toLocaleDateString('tr-TR')}
-                  </td>
-                  <td className="px-6 py-4 text-right space-x-2">
+                  </div>
+                  <div className="sm:col-span-1 flex sm:justify-end space-x-2 mt-2 sm:mt-0">
                     <button
                       onClick={() => router.push(`/admin/dashboard/edit-book?id=${book.id}`)}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-blue-600 hover:text-blue-900 text-sm"
                     >
                       Düzenle
                     </button>
                     <button
                       onClick={() => handleDelete(book.id, 'books')}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 hover:text-red-900 text-sm"
                     >
                       Sil
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </div>
         )}
       </div>
     </div>
