@@ -9,7 +9,6 @@ const navigation = [
   { name: 'Portfolyo', href: '/portfolyo' },
   { name: 'Hakkımda', href: '/hakkimda' },
   { name: 'Kitap Tavsiyeleri', href: '/kitap-tavsiyeleri' },
-  { name: 'Perspektif', href: '/perspektif' },
   { name: 'Bir ki cümle Şiir Kitabı', href: '/siir-kitabi' },
 ]
 
