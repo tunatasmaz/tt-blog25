@@ -44,7 +44,7 @@ export default function Footer() {
               <span className="sr-only">LinkedIn</span>
             </Link>
             <Link
-              href="https://vsco.co/tunatasmaz/"
+              href="https://unsplash.com/@tunatasmaz"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-600 hover:text-gray-900 transition-colors"
@@ -52,12 +52,12 @@ export default function Footer() {
               <svg
                 className="h-5 w-5"
                 fill="currentColor"
-                viewBox="0 0 24 24"
+                viewBox="0 0 32 32"
                 aria-hidden="true"
               >
-                <path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm7.2 14.352c-.384.66-3.244 4.148-7.2 4.148s-6.816-3.488-7.2-4.148c-.384-.66-.384-4.704 0-5.364.384-.66 3.244-4.148 7.2-4.148s6.816 3.488 7.2 4.148c.384.66.384 4.704 0 5.364z M12 7.2c-2.648 0-4.8 2.152-4.8 4.8s2.152 4.8 4.8 4.8 4.8-2.152 4.8-4.8-2.152-4.8-4.8-4.8z" />
+                <path d="M10 9V0h12v9H10zm12 5h10v18H0V14h10v9h12v-9z" />
               </svg>
-              <span className="sr-only">VSCO</span>
+              <span className="sr-only">Unsplash</span>
             </Link>
           </div>
         </div>
