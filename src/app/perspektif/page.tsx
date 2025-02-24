@@ -21,15 +21,21 @@ export default function PerspektifPage() {
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
-        console.log('API Key:', process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY)
-        const response = await fetch('https://api.unsplash.com/users/tunatasmaz/photos?per_page=30', {
+        const accessKey = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY
+        console.log('Using API Key:', accessKey)
+
+        // Önce public endpoint'i deneyelim
+        const response = await fetch('https://api.unsplash.com/photos?per_page=30', {
           headers: {
-            Authorization: `Client-ID ${process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY}`
+            'Authorization': `Client-ID ${accessKey}`,
+            'Accept-Version': 'v1'
           }
         })
         
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+          const errorText = await response.text()
+          console.error('API Error:', errorText)
+          throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`)
         }
         
         const data = await response.json()
