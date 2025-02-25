@@ -8,6 +8,7 @@ import { uploadImage } from '@/lib/upload'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { Article, Portfolio } from '@/types'
+import Link from 'next/link'
 
 const Editor = dynamic(() => import('@/components/Editor'), {
   ssr: false,
@@ -45,12 +46,14 @@ export default function EditPage() {
     title: '',
     slug: '',
     content: '',
+    excerpt: '',
     published: false,
     created_at: '',
     updated_at: ''
   })
   const [preview, setPreview] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (!id) return
@@ -62,53 +65,75 @@ export default function EditPage() {
         return
       }
 
-      const { data, error } = await supabase
-        .from(type)
-        .select('*')
-        .eq('id', id)
-        .single()
+      try {
+        setLoading(true)
+        const { data, error } = await supabase
+          .from(type)
+          .select('*')
+          .eq('id', id)
+          .single()
 
-      if (error) {
+        if (error) {
+          throw error
+        }
+
+        if (data) {
+          console.log('Loaded article data:', data)
+          setForm(data)
+        }
+      } catch (error) {
         console.error(`Error loading ${type}:`, error)
+        alert('İçerik yüklenirken bir hata oluştu')
         router.push('/admin/dashboard')
-        return
-      }
-
-      if (data) {
-        setForm(data)
+      } finally {
+        setLoading(false)
       }
     }
 
     checkSession()
   }, [id, router, type])
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      setUploading(true)
-      
-      if (!event.target.files || event.target.files.length === 0) {
-        return
-      }
+  if (loading) {
+    return <div className="p-4">Yükleniyor...</div>
+  }
 
-      const file = event.target.files[0]
-      const publicUrl = await uploadImage(file)
-      
-      if (type === 'portfolio') {
-        setForm({ ...form, cover_image: publicUrl } as Portfolio)
-      } else {
-        setForm({ ...form, image_url: publicUrl } as Article)
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files || event.target.files.length === 0) return;
+
+    try {
+      setUploading(true);
+      const file = event.target.files[0];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError, data } = await supabase.storage
+        .from('images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      if (data) {
+        const { data: { publicUrl } } = supabase.storage
+          .from('images')
+          .getPublicUrl(data.path);
+        
+        if (type === 'portfolio') {
+          setForm({ ...form, cover_image: publicUrl } as Portfolio)
+        } else {
+          setForm({ ...form, image_url: publicUrl } as Article)
+        }
       }
-      
-    } catch (error: any) {
-      console.error('Görsel yükleme hatası:', error)
-      alert(error.message || 'Görsel yüklenirken bir hata oluştu')
+    } catch (error) {
+      console.error('Görsel yükleme hatası:', error);
+      alert('Görsel yüklenirken bir hata oluştu');
     } finally {
-      setUploading(false)
+      setUploading(false);
       if (event.target) {
-        event.target.value = ''
+        event.target.value = '';
       }
     }
-  }
+  };
 
   const handleGalleryUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (type !== 'portfolio') return
@@ -186,221 +211,204 @@ export default function EditPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">{isPortfolio ? 'Portfolyo' : 'Makale'} Düzenle</h1>
-        <label className="flex items-center px-4 py-2 bg-white rounded-lg shadow-sm border">
-          <input
-            type="checkbox"
-            checked={form.published}
-            onChange={(e) => setForm({ ...form, published: e.target.checked })}
-            className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          />
-          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-            Yayınla
-          </span>
-        </label>
-      </div>
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white rounded-lg shadow-sm border p-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Başlık
-          </label>
-          <input
-            type="text"
-            value={form.title}
-            onChange={handleTitleChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Slug
-          </label>
-          <input
-            type="text"
-            value={form.slug}
-            onChange={(e) => setForm({ ...form, slug: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
-            required
-          />
-        </div>
-
-        {isPortfolio ? (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Açıklama
-            </label>
-            <textarea
-              value={(form as Portfolio).description || ''}
-              onChange={(e) => setForm({ ...form, description: e.target.value } as Portfolio)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
-              rows={3}
-            />
-          </div>
-        ) : (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Özet
-            </label>
-            <textarea
-              value={(form as Article).excerpt || ''}
-              onChange={(e) => setForm({ ...form, excerpt: e.target.value } as Article)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
-              rows={3}
-            />
-          </div>
-        )}
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            {isPortfolio ? 'Kapak Görseli' : 'Görsel'}
-          </label>
-          <div className="flex items-center space-x-4">
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
-              disabled={uploading}
-            >
-              {uploading ? 'Yükleniyor...' : 'Görsel Yükle'}
-            </button>
-            <input
-              type="text"
-              value={isPortfolio ? (form as Portfolio).cover_image || '' : (form as Article).image_url || ''}
-              onChange={(e) => isPortfolio 
-                ? setForm({ ...form, cover_image: e.target.value } as Portfolio)
-                : setForm({ ...form, image_url: e.target.value } as Article)
-              }
-              placeholder="veya görsel URL'si girin"
-              className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
-            />
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
-            />
-          </div>
-          {((isPortfolio && (form as Portfolio).cover_image) || (!isPortfolio && (form as Article).image_url)) && (
-            <div className="mt-2">
-              <Image
-                src={isPortfolio ? (form as Portfolio).cover_image! : (form as Article).image_url!}
-                alt="Görsel"
-                width={200}
-                height={200}
-                className="rounded-lg"
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-4xl mx-auto py-24 px-4 sm:px-6 lg:px-8">
+        <div className="bg-white shadow-sm rounded-lg p-8 space-y-8">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold">{isPortfolio ? 'Portfolyo' : 'Makale'} Düzenle</h1>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={form.published}
+                onChange={(e) => setForm({ ...form, published: e.target.checked })}
+                className="rounded border-gray-300 text-blue-600"
               />
-            </div>
-          )}
-        </div>
+              <span>Yayınla</span>
+            </label>
+          </div>
 
-        {isPortfolio && (
-          <>
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Galeri Görselleri
-              </label>
-              <div className="flex items-center space-x-4">
-                <button
-                  type="button"
-                  onClick={() => galleryInputRef.current?.click()}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
-                  disabled={uploading}
-                >
-                  {uploading ? 'Yükleniyor...' : 'Galeri Görseli Yükle'}
-                </button>
-                <input
-                  ref={galleryInputRef}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleGalleryUpload}
-                  className="hidden"
-                />
-              </div>
-              <div className="mt-4 grid grid-cols-3 gap-4">
-                {((form as Portfolio).gallery_images || []).map((image, index) => (
-                  <div key={index} className="relative">
-                    <Image
-                      src={image}
-                      alt={`Galeri görseli ${index + 1}`}
-                      width={200}
-                      height={200}
-                      className="rounded-lg"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(image, index)}
-                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Video URL
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Başlık
               </label>
               <input
                 type="text"
-                value={(form as Portfolio).video_url || ''}
-                onChange={(e) => setForm({ ...form, video_url: e.target.value } as Portfolio)}
-                placeholder="YouTube veya Vimeo video URL'si"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
+                value={form.title}
+                onChange={handleTitleChange}
+                className="w-full rounded-md border p-2"
+                required
               />
             </div>
-          </>
-        )}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            İçerik
-          </label>
-          <Editor
-            initialValue={form.content}
-            onEditorChange={(newContent: string) => setForm({ ...form, content: newContent })}
-            init={{
-              height: 500,
-              menubar: false,
-              plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-              ],
-              toolbar: 'undo redo | blocks | ' +
-                'bold italic forecolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help',
-              content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-            }}
-          />
-        </div>
+            {isPortfolio && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Açıklama
+                </label>
+                <textarea
+                  value={(form as Portfolio).description || ''}
+                  onChange={(e) => setForm({ ...form, description: e.target.value } as Portfolio)}
+                  className="w-full rounded-md border p-2 min-h-[100px]"
+                  placeholder="Portfolyo projesi hakkında kısa açıklama"
+                />
+              </div>
+            )}
 
-        <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            onClick={() => router.push('/admin/dashboard')}
-            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
-          >
-            İptal
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
-          >
-            Kaydet
-          </button>
+            {isPortfolio && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Video URL
+                </label>
+                <input
+                  type="text"
+                  value={(form as Portfolio).video_url || ''}
+                  onChange={(e) => setForm({ ...form, video_url: e.target.value } as Portfolio)}
+                  className="w-full rounded-md border p-2"
+                  placeholder="YouTube veya Vimeo video URL'si"
+                />
+              </div>
+            )}
+
+            {isPortfolio ? (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Kapak Görseli
+                </label>
+                <div className="flex items-center space-x-4">
+                  {(form as Portfolio).cover_image && (
+                    <Image
+                      src={(form as Portfolio).cover_image}
+                      alt="Kapak görseli"
+                      width={100}
+                      height={100}
+                      className="rounded-lg object-cover"
+                    />
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200"
+                  >
+                    Kapak Görseli Yükle
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Görsel
+                </label>
+                <div className="flex items-center space-x-4">
+                  {(form as Article).image_url && (
+                    <Image
+                      src={(form as Article).image_url}
+                      alt="Makale görseli"
+                      width={100}
+                      height={100}
+                      className="rounded-lg object-cover"
+                    />
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200"
+                  >
+                    Görsel Yükle
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </div>
+              </div>
+            )}
+
+            {isPortfolio && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Galeri Görselleri
+                </label>
+                <div className="space-y-4">
+                  <button
+                    type="button"
+                    onClick={() => galleryInputRef.current?.click()}
+                    className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200"
+                  >
+                    Galeri Görseli Ekle
+                  </button>
+                  <input
+                    ref={galleryInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleGalleryUpload}
+                    className="hidden"
+                  />
+                  
+                  {/* Galeri görsellerini göster */}
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                    {((form as Portfolio).gallery_images || []).map((image, index) => (
+                      <div key={index} className="relative group">
+                        <Image
+                          src={image}
+                          alt={`Galeri görseli ${index + 1}`}
+                          width={300}
+                          height={200}
+                          className="rounded-lg object-cover w-full h-48"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newImages = [...((form as Portfolio).gallery_images || [])];
+                            newImages.splice(index, 1);
+                            setForm({ ...form, gallery_images: newImages } as Portfolio);
+                          }}
+                          className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                İçerik
+              </label>
+              <Editor
+                content={form.content}
+                onChange={(newContent) => setForm({ ...form, content: newContent })}
+              />
+            </div>
+
+            <div className="flex justify-end space-x-4">
+              <button
+                type="button"
+                onClick={() => router.push('/admin/dashboard')}
+                className="px-4 py-2 border rounded-md hover:bg-gray-50"
+              >
+                İptal
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   )
 }

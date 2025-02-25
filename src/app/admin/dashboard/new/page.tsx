@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { supabase } from '@/lib/supabase'
+import Image from 'next/image'
+import Link from 'next/link'
 
 const Editor = dynamic(() => import('@/components/Editor'), {
   ssr: false,
@@ -95,137 +97,122 @@ export default function NewArticlePage() {
   }
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-6 px-4">Yeni Makale</h1>
-      
-      <form onSubmit={handleSubmit} className="space-y-4 p-4">
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Başlık
-          </label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => {
-              const newTitle = e.target.value;
-              setTitle(newTitle);
-              setSlug(generateSlug(newTitle));
-            }}
-            className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:text-gray-300"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="slug" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Slug
-          </label>
-          <input
-            type="text"
-            id="slug"
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:text-gray-300"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            İçerik
-          </label>
-          <div className="mt-1">
-            <Editor
-              content={content}
-              onChange={setContent}
-              placeholder="İçerik yazın..."
-            />
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-4xl mx-auto py-24 px-4 sm:px-6 lg:px-8">
+        <div className="bg-white shadow-sm rounded-lg p-8 space-y-8">
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-bold text-gray-900">Yeni Makale</h1>
+            <label className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                checked={published}
+                onChange={(e) => setPublished(e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 h-5 w-5"
+              />
+              <span className="text-gray-700">Yayınla</span>
+            </label>
           </div>
-        </div>
 
-        <div>
-          <label htmlFor="excerpt" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Özet
-          </label>
-          <textarea
-            id="excerpt"
-            value={excerpt}
-            onChange={(e) => setExcerpt(e.target.value)}
-            rows={3}
-            className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:text-gray-300"
-          />
-        </div>
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div>
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Başlık
+              </label>
+              <input
+                type="text"
+                id="title"
+                value={title}
+                onChange={(e) => {
+                  const newTitle = e.target.value;
+                  setTitle(newTitle);
+                  setSlug(generateSlug(newTitle));
+                }}
+                className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:text-gray-300"
+                required
+              />
+            </div>
 
-        <div>
-          <label htmlFor="image" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Kapak Görseli
-          </label>
-          <input
-            type="file"
-            id="image"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-md file:border-0
-              file:text-sm file:font-semibold
-              file:bg-indigo-50 file:text-indigo-700
-              dark:file:bg-indigo-900 dark:file:text-indigo-300
-              hover:file:bg-indigo-100 dark:hover:file:bg-indigo-800"
-          />
-          {imageUrl && (
-            <img 
-              src={imageUrl} 
-              alt="Kapak görseli"
-              className="mt-2 rounded-lg max-h-48 object-cover" 
-            />
-          )}
-        </div>
+            <div>
+              <label htmlFor="slug" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Slug
+              </label>
+              <input
+                type="text"
+                id="slug"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:text-gray-300"
+                required
+              />
+            </div>
 
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="published"
-            checked={published}
-            onChange={(e) => setPublished(e.target.checked)}
-            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-          />
-          <label htmlFor="published" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-            Yayınla
-          </label>
-        </div>
-
-        {error && (
-          <div className="rounded-md bg-red-50 dark:bg-red-900/50 p-4">
-            <div className="flex">
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800 dark:text-red-200">Hata</h3>
-                <div className="mt-2 text-sm text-red-700 dark:text-red-300">
-                  <p>{error}</p>
-                </div>
+            <div>
+              <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                İçerik
+              </label>
+              <div className="mt-1">
+                <Editor
+                  content={content}
+                  onChange={setContent}
+                  placeholder="İçerik yazın..."
+                />
               </div>
             </div>
-          </div>
-        )}
 
-        <div className="flex justify-end gap-4">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            İptal
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Kaydediliyor...' : 'Kaydet'}
-          </button>
+            <div>
+              <label htmlFor="excerpt" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Özet
+              </label>
+              <textarea
+                id="excerpt"
+                value={excerpt}
+                onChange={(e) => setExcerpt(e.target.value)}
+                rows={3}
+                className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:text-gray-300"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="image" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Kapak Görseli
+              </label>
+              <input
+                type="file"
+                id="image"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-md file:border-0
+                  file:text-sm file:font-semibold
+                  file:bg-indigo-50 file:text-indigo-700
+                  dark:file:bg-indigo-900 dark:file:text-indigo-300
+                  hover:file:bg-indigo-100 dark:hover:file:bg-indigo-800"
+              />
+              {imageUrl && (
+                <img 
+                  src={imageUrl} 
+                  alt="Kapak görseli"
+                  className="mt-2 rounded-lg max-h-48 object-cover" 
+                />
+              )}
+            </div>
+
+            {error && (
+              <div className="rounded-md bg-red-50 dark:bg-red-900/50 p-4">
+                <div className="flex">
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800 dark:text-red-200">Hata</h3>
+                    <div className="mt-2 text-sm text-red-700 dark:text-red-300">
+                      <p>{error}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   )
 }
