@@ -1,14 +1,6 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
-
-const inter = Inter({
-  subsets: ['latin', 'latin-ext'],
-  weight: ['400', '500', '600'],
-  display: 'swap',
-  variable: '--font-inter',
-})
 
 export const metadata = {
   title: 'Tuna Taşmaz | Portfolio',
@@ -51,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="tr" className={inter.variable} suppressHydrationWarning>
+    <html lang="tr" suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
