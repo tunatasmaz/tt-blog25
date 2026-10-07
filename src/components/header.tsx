@@ -5,9 +5,9 @@ import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
 const navigation = [
-  { name: 'Makaleler', href: '/' },
-  { name: 'Portfolyo', href: '/portfolyo' },
-  { name: 'Hakkımda', href: '/hakkimda' },
+  // Makaleler ve Portfolyo geçici olarak gizlendi (sayfalar ve veriler duruyor)
+  // { name: 'Makaleler', href: '/' },
+  // { name: 'Portfolyo', href: '/portfolyo' },
   { name: 'Kitap Tavsiyeleri', href: '/kitap-tavsiyeleri' },
   { name: 'Bir ki cümle Şiir Kitabı', href: '/siir-kitabi' },
 ]

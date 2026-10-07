@@ -9,6 +9,11 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      { source: '/hakkimda', destination: '/', permanent: true },
+    ]
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

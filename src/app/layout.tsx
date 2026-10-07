@@ -51,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="tr" className={inter.variable}>
+    <html lang="tr" className={inter.variable} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
@@ -72,7 +72,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-white text-gray-900 antialiased min-h-screen flex flex-col">
+      <body className="bg-white text-gray-900 antialiased min-h-screen flex flex-col" suppressHydrationWarning>
         <Header />
         <main className="flex-1">
           {children}

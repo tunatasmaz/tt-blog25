@@ -1,110 +1,99 @@
 import { Metadata } from 'next'
-import Link from 'next/link'
-import Image from 'next/image'
-import { getArticles } from '@/lib/db'
-
-// Her istekte sayfayı yeniden oluştur
-export const revalidate = 0
 
 export const metadata: Metadata = {
-  title: 'Tt.',
-  description: 'Product Designer Portfolio',
+  title: 'Tuna Taşmaz',
+  description: 'Girişimci. iz ve Connectlist’in kurucu ortağı.',
 }
 
-export default async function HomePage() {
-  const articles = await getArticles()
+const APP_STORE = 'https://apps.apple.com/app/id6795542625'
+const PLAY_STORE = 'https://play.google.com/store/apps/details?id=com.izlabs.iz'
 
+const label = 'text-[11px] uppercase tracking-[0.2em]'
+const underline =
+  'relative inline-block after:absolute after:left-0 after:-bottom-0.5 after:h-px after:w-full after:bg-current after:origin-right after:scale-x-0 hover:after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300'
+
+export default function HomePage() {
   return (
-    <div className="container mx-auto px-4 py-12 max-w-5xl">
-      <section className="mb-16">
-        <h1 className="text-xl font-medium mb-2">Tuna Taşmaz</h1>
-        <h2 className="text-lg text-gray-800 mb-1 font-bold">Girişimci & Ürün Tasarımcısı</h2>
-        <p className="text-gray-600 mb-6">İstanbul, Türkiye</p>
+    <div className="container mx-auto flex min-h-[calc(100vh-15rem)] max-w-5xl items-center px-4 py-4 md:min-h-[calc(100vh-12rem)] md:py-8">
+      <div className="grid w-full gap-7 md:grid-cols-2 md:gap-16">
+        {/* Kimlik */}
+        <section>
+          <h1 className="mb-3 text-2xl font-medium md:mb-6">Tuna Taşmaz</h1>
+          <div className="space-y-1 leading-snug text-gray-600">
+            <p>Girişimci</p>
+            <p className="italic text-gray-400">İstanbul</p>
+          </div>
 
-        <div className="text-gray-600 space-y-4">
-          <p>
-            <a 
-              href="https://connectlist.me" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="text-gray-500 font-bold hover:text-gray-700 transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-gray-600 after:origin-right after:scale-x-0 hover:after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
-            >
-              Connectlist
-            </a> adında bir proje geliştiriyorum. Aynı zamanda Yapay zeka araçları ve dijital ürün tasarımıyla ilgileniyorum.
-          </p>
-          
-          <p>
-            Kendi projelerim ve zaman buldukça bilgi içerikli tasarımları hayata geçiriyorum.
-          </p>
-          
-          <p>
-            Okuduğum kitapları öneriyor, farklı konularda makaleler yazıyorum. 2015 yılında yazdığım Şiir kitabımı da burada bulabilirsin.
-          </p>
-          
-          <p>
-            Projeler, tasarımlar ve sektör üzerinde konuşmak için,{' '}
-            <a 
-              href="mailto:tunatasmaz@gmail.com"
-              className="text-gray-500 font-bold hover:text-gray-700 transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-gray-600 after:origin-right after:scale-x-0 hover:after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
-            >
-              benimle iletişime geçebilirsin.
+          <div className="mt-4 space-y-1 text-sm leading-snug text-gray-500 md:mt-6">
+            <p>Hiç bir şeye bedel ödemeden, acı çekmeden erişemezsin.</p>
+            <p>Çok çalışmak yetmez. Ama çalışmalısın ve yolda kalmalısın.</p>
+            <p>Ben hala bir yoldayım ve yürümeye devam ediyorum.</p>
+          </div>
+        </section>
+
+        {/* Projeler */}
+        <section className="space-y-6 md:space-y-10">
+          <div>
+            <div className="mb-4 flex items-center gap-2 text-gray-900">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-black opacity-40" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-black" />
+              </span>
+              <span className={label}>şimdi · kurucu ortak</span>
+            </div>
+
+            <a href="https://iz.city" target="_blank" rel="noopener noreferrer">
+              <h2 className="text-5xl font-semibold leading-none tracking-tighter md:text-7xl">iz.</h2>
             </a>
-          </p>
-        </div>
-      </section>
+            <p className="mt-4 text-xl tracking-tight">iz bırakıyoruz, anı biriktiriyoruz!</p>
+            <p className="mt-2 hidden max-w-sm text-sm leading-relaxed text-gray-500 md:block">
+              Bir fotoğraf, bir şarkı belki bir cümle. Tam o anda bulunduğun yere bir iz bırak.
+            </p>
 
-      <section className="mb-12">
-        <h2 className="text-2xl font-medium mb-8">Makaleler</h2>
+            <div className="mt-5 flex flex-wrap items-center gap-3 text-sm">
+              <a
+                href={APP_STORE}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-black px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700"
+              >
+                App Store
+              </a>
+              <a
+                href={PLAY_STORE}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full border border-gray-300 px-4 py-2 font-medium transition-colors hover:border-black"
+              >
+                Google Play
+              </a>
+              <a
+                href="https://iz.city"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${underline} ml-1 text-gray-500 hover:text-black`}
+              >
+                iz.city ↗
+              </a>
+            </div>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {articles && articles.map((article) => (
-            <Link 
-              key={article.id}
-              href={`/${article.slug}`}
-              className="group block"
-            >
-              <article className="flex flex-col h-full bg-white rounded-xl overflow-hidden hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-gray-200 hover:shadow-sm">
-                {article.image_url && (
-                  <div className="relative w-full aspect-[16/9]">
-                    <Image
-                      src={article.image_url}
-                      alt={article.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                )}
-                <div className="flex flex-col justify-between flex-grow p-6">
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <time className="text-sm font-medium text-gray-400 tracking-wide">
-                        {new Intl.DateTimeFormat('tr-TR', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        }).format(new Date(article.created_at))}
-                      </time>
-                    </div>
-                    <h2 className="text-lg font-semibold mb-3 group-hover:text-gray-600 transition-colors line-clamp-2">
-                      {article.title}
-                    </h2>
-                    {article.excerpt && (
-                      <p className="text-gray-600 line-clamp-2 leading-relaxed text-sm">
-                        {article.excerpt}
-                      </p>
-                    )}
-                  </div>
-                  
-                  <div className="flex items-center gap-2 mt-4 text-sm font-medium text-gray-600">
-                    <span>Devamını Oku</span>
-                    <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
-                  </div>
-                </div>
-              </article>
-            </Link>
-          ))}
-        </div>
-      </section>
+          <a
+            href="https://connectlist.me"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group block border-t border-gray-100 pt-4 md:pt-6"
+          >
+            <div className={`${label} mb-3 text-gray-300`}>yakında · kurucu ortak</div>
+            <h2 className="text-2xl font-medium tracking-tight text-gray-300 transition-colors duration-500 group-hover:text-gray-500">
+              connect:list
+            </h2>
+            <p className="mt-1 text-sm text-gray-300 transition-colors duration-500 group-hover:text-gray-500">
+              yeni bir keşif ağı · hazırlanıyoruz
+            </p>
+          </a>
+        </section>
+      </div>
     </div>
   )
 }
