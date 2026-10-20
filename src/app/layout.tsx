@@ -5,6 +5,9 @@ import Footer from '@/components/footer'
 export const metadata = {
   title: 'Tuna Taşmaz | Portfolio',
   description: 'Product Designer Portfolio',
+  verification: {
+    google: 'rBbPEmXXfBoWbbJKfzQUGfZ71mjYK15oxQ5zqxxqnIg',
+  },
   icons: {
     icon: [
       {
